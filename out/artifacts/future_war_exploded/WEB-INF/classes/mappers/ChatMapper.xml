@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zengqiang.future.dao.ChatMapper" >
+  <resultMap id="BaseResultMap" type="com.zengqiang.future.pojo.Chat" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="content" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="send_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="rec_status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="rec_user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="send_user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="send_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, content, send_status, rec_status, type, rec_user_id, send_user_id, send_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from chat
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from chat
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zengqiang.future.pojo.Chat" >
+    insert into chat (id, content, send_status, 
+      rec_status, type, rec_user_id, 
+      send_user_id, send_time)
+    values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{sendStatus,jdbcType=INTEGER}, 
+      #{recStatus,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{recUserId,jdbcType=INTEGER}, 
+      #{sendUserId,jdbcType=INTEGER}, #{sendTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.Chat" >
+    insert into chat
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="sendStatus != null" >
+        send_status,
+      </if>
+      <if test="recStatus != null" >
+        rec_status,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="recUserId != null" >
+        rec_user_id,
+      </if>
+      <if test="sendUserId != null" >
+        send_user_id,
+      </if>
+      <if test="sendTime != null" >
+        send_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sendStatus != null" >
+        #{sendStatus,jdbcType=INTEGER},
+      </if>
+      <if test="recStatus != null" >
+        #{recStatus,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="recUserId != null" >
+        #{recUserId,jdbcType=INTEGER},
+      </if>
+      <if test="sendUserId != null" >
+        #{sendUserId,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zengqiang.future.pojo.Chat" >
+    update chat
+    <set >
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sendStatus != null" >
+        send_status = #{sendStatus,jdbcType=INTEGER},
+      </if>
+      <if test="recStatus != null" >
+        rec_status = #{recStatus,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="recUserId != null" >
+        rec_user_id = #{recUserId,jdbcType=INTEGER},
+      </if>
+      <if test="sendUserId != null" >
+        send_user_id = #{sendUserId,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null" >
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zengqiang.future.pojo.Chat" >
+    update chat
+    set content = #{content,jdbcType=VARCHAR},
+      send_status = #{sendStatus,jdbcType=INTEGER},
+      rec_status = #{recStatus,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      rec_user_id = #{recUserId,jdbcType=INTEGER},
+      send_user_id = #{sendUserId,jdbcType=INTEGER},
+      send_time = #{sendTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
