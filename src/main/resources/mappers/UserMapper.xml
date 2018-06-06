@@ -31,7 +31,7 @@
     delete from user
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zengqiang.future.pojo.User" >
+  <insert id="insert" parameterType="com.zengqiang.future.pojo.User" useGeneratedKeys="true" keyProperty="id">
     insert into user (id, account_id, nick_name, 
       status, messages, image_id, 
       personal_indroduce, qq_number, email, 
@@ -173,7 +173,7 @@
       email = #{email,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -184,4 +184,39 @@
     WHERE account_id=#{id}
   </select>
 
+  <update id="updateByAccountId" parameterType="com.zengqiang.future.pojo.User">
+    update user
+    <set >
+
+      <if test="nickName != null" >
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="messages != null" >
+        messages = #{messages,jdbcType=INTEGER},
+      </if>
+      <if test="imageId != null" >
+        image_id = #{imageId,jdbcType=INTEGER},
+      </if>
+      <if test="personalIndroduce != null" >
+        personal_indroduce = #{personalIndroduce,jdbcType=VARCHAR},
+      </if>
+      <if test="qqNumber != null" >
+        qq_number = #{qqNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      update_time=now()
+    </set>
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </update>
 </mapper>

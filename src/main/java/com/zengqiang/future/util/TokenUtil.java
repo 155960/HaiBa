@@ -94,6 +94,14 @@ public class TokenUtil {
         return claims;
     }
 
+    public static Claims checkToken(String token){
+        SecretKey key = generalKey();  //签名秘钥，和生成的签名的秘钥一模一样
+        Claims claims = Jwts.parser()  //得到DefaultJwtParser
+                .setSigningKey(key)         //设置签名的秘钥
+                .parseClaimsJws(token).getBody();//设置需要解析的jwt
+        return claims;
+    }
+
 
     /**
      * 由字符串生成加密key
@@ -118,7 +126,7 @@ public class TokenUtil {
             e1.printStackTrace();
         }
         System.out.println("签名之后的JWT:"+ab);
-        String jwt=ab;
+        String jwt="1234546gdfdvc.ertyyuggvh.retyfghj";
         Claims c=null;
         try {
             c = util.parseJWT(jwt);

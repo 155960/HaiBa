@@ -14,4 +14,6 @@ public interface RolePerMapper {
     int updateByPrimaryKeySelective(RolePer record);
 
     int updateByPrimaryKey(RolePer record);
+
+    int selectCodeByRoleId(Integer id);
 }

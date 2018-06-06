@@ -6,6 +6,8 @@ import com.zengqiang.future.pojo.Account;
 import com.zengqiang.future.pojo.User;
 import com.zengqiang.future.service.IUserService;
 import com.zengqiang.future.util.TokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,8 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
+    Logger logger= LoggerFactory.getLogger(UserController.class);
+
     @Autowired
     private IUserService userService;
 
@@ -31,7 +35,8 @@ public class UserController {
         return userService.register(userForm);
     }
 
-    @RequestMapping("/login")
+
+    @RequestMapping(value = "/login" ,method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse login(UserForm userForm, HttpServletResponse response){
         ServerResponse serverResponse=
@@ -40,11 +45,25 @@ public class UserController {
             Map<String,Object> claims=new HashMap<>();
             claims.put("account",userForm.getAccount());
             claims.put("type",userForm.getType());
-            String token= TokenUtil.createToken("account",claims,100000);
+            String token= TokenUtil.createToken(userForm.getAccount(),claims,100000);
             response.addHeader("Authorization",token);
-
+            //更新登录状态
+            boolean isSuccess=userService.updateLoginStatus(userForm.getAccount(),true);
+            if(isSuccess){
+                logger.info("用户"+userForm.getAccount()+"登录成功");
+                return serverResponse;
+            }else{
+                logger.info("用户"+userForm.getAccount()+"登录成功");
+                return ServerResponse.createByErrorMessage("未知错误");
+            }
         }
-
         return serverResponse;
+    }
+
+    @RequestMapping(value = "/logout" ,method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse logout(String account,HttpServletResponse response){
+        String token=response.getHeader("Authorization");
+        return userService.logout(account,token);
     }
 }

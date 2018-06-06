@@ -18,5 +18,5 @@ public interface AccountMapper {
 
     String selectPasswordByAccount(@Param("account") String account);
 
-    int selectIdByAccount(String account);
+    Integer selectIdByAccount(String account);
 }

@@ -1,5 +1,6 @@
 package com.zengqiang.future.controller;
 
+import com.zengqiang.future.dao.AccountMapper;
 import com.zengqiang.future.dao.RoleMapper;
 import com.zengqiang.future.dao.UserMapper;
 import com.zengqiang.future.dao.UserRoleMapper;
@@ -24,10 +25,15 @@ public class TextControoler {
     @Autowired
     TestService testService;
 
+    @Autowired
+    AccountMapper accountMapper;
+
     @RequestMapping("test")
     public void test(){
 
-        testService.test();
+        Integer a=accountMapper.selectIdByAccount("1234");
+        int b=accountMapper.selectIdByAccount("123456789");
+        System.out.println(a+"  "+b);
        /* System.out.println("test");
         for(int i=0;i<150;i++){
         try{

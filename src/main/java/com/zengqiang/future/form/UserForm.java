@@ -20,6 +20,16 @@ public class UserForm {
 
     private String phone;
 
+    private int perCode;
+
+    public int getPerCode() {
+        return perCode;
+    }
+
+    public void setPerCode(int perCode) {
+        this.perCode = perCode;
+    }
+
     public Integer getType() {
         return type;
     }

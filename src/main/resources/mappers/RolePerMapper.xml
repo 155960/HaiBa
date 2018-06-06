@@ -70,4 +70,9 @@
       per_id = #{perId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCodeByRoleId" parameterType="int" resultType="int">
+    SELECT code from role_per
+    WHERE role_id=#{id}
+  </select>
 </mapper>
