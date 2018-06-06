@@ -15,14 +15,14 @@ public class PostServiceImpl implements IPostService {
     private PostMapper postMapper;
 
     public ServerResponse createPost(PostForm form){
-
+        return null;
     }
 
     private Post postFormToPost(PostForm form){
         Post post=new Post();
         post.setIsEnabledComment(form.getIsEnabledComment());
-        post.setItemId(form.getItemId());
         post.setType(post.getType());
         post.setUserId(form.getUserId());
+        return post;
     }
 }

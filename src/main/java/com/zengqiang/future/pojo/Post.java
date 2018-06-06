@@ -9,7 +9,9 @@ public class Post {
 
     private Integer type;
 
-    private Integer itemId;
+    private Integer addrId;
+
+    private String content;
 
     private Integer numPraise;
 
@@ -21,11 +23,12 @@ public class Post {
 
     private Date updateTime;
 
-    public Post(Integer id, Integer userId, Integer type, Integer itemId, Integer numPraise, Integer numComment, Integer isEnabledComment, Date createTime, Date updateTime) {
+    public Post(Integer id, Integer userId, Integer type, Integer addrId, String content, Integer numPraise, Integer numComment, Integer isEnabledComment, Date createTime, Date updateTime) {
         this.id = id;
         this.userId = userId;
         this.type = type;
-        this.itemId = itemId;
+        this.addrId = addrId;
+        this.content = content;
         this.numPraise = numPraise;
         this.numComment = numComment;
         this.isEnabledComment = isEnabledComment;
@@ -61,12 +64,20 @@ public class Post {
         this.type = type;
     }
 
-    public Integer getItemId() {
-        return itemId;
+    public Integer getAddrId() {
+        return addrId;
     }
 
-    public void setItemId(Integer itemId) {
-        this.itemId = itemId;
+    public void setAddrId(Integer addrId) {
+        this.addrId = addrId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content == null ? null : content.trim();
     }
 
     public Integer getNumPraise() {

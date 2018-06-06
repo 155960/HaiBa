@@ -5,9 +5,12 @@ public class Adress {
 
     private String name;
 
-    public Adress(Integer id, String name) {
+    private String addrDetail;
+
+    public Adress(Integer id, String name, String addrDetail) {
         this.id = id;
         this.name = name;
+        this.addrDetail = addrDetail;
     }
 
     public Adress() {
@@ -28,5 +31,13 @@ public class Adress {
 
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
+    }
+
+    public String getAddrDetail() {
+        return addrDetail;
+    }
+
+    public void setAddrDetail(String addrDetail) {
+        this.addrDetail = addrDetail == null ? null : addrDetail.trim();
     }
 }
