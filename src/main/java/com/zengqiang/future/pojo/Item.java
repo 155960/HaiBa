@@ -6,6 +6,8 @@ import java.util.Date;
 public class Item {
     private Integer id;
 
+    private Integer postId;
+
     private String title;
 
     private String itemDescribe;
@@ -18,8 +20,9 @@ public class Item {
 
     private Date updateTime;
 
-    public Item(Integer id, String title, String itemDescribe, BigDecimal price, Integer number, Date createTime, Date updateTime) {
+    public Item(Integer id, Integer postId, String title, String itemDescribe, BigDecimal price, Integer number, Date createTime, Date updateTime) {
         this.id = id;
+        this.postId = postId;
         this.title = title;
         this.itemDescribe = itemDescribe;
         this.price = price;
@@ -38,6 +41,14 @@ public class Item {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Integer postId) {
+        this.postId = postId;
     }
 
     public String getTitle() {
