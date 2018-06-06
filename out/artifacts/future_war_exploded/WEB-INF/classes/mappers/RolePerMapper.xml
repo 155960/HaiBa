@@ -72,7 +72,8 @@
   </update>
 
   <select id="selectCodeByRoleId" parameterType="int" resultType="int">
-    SELECT code from role_per
-    WHERE role_id=#{id}
+    SELECT code from permission
+    WHERE id=(SELECT per_id from role_per
+    WHERE  role_id=#{id})
   </select>
 </mapper>

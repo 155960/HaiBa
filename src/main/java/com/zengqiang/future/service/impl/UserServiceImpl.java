@@ -14,6 +14,7 @@ import com.zengqiang.future.service.IUserService;
 import com.zengqiang.future.util.EncryptUtil;
 import com.zengqiang.future.util.TokenUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,32 +41,34 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private RolePerMapper rolePerMapper;
 
-    public String checkToken(String token){
+    public String checkToken(String token)throws Exception{
         if(token==null){
             return null;
         }
-        try{
             Claims claims=TokenUtil.checkToken(token);
             if(claims!=null){
                 return (String)claims.get("account");
             }
-        }catch (Exception e){
-            logger.error("token过期或者验证错误");
-            return null;
-        }
         return null;
-      //  TokenUtil.
     }
 
     public ServerResponse logout(String account,String token){
         if(account==null||token==null){
             return ServerResponse.createByErrorMessage("参数错误");
         }
-        String account1=checkToken(token);
-        if(account1==null){
+
+        String account1= null;
+        try {
+            account1 = checkToken(token);
+        }catch (ExpiredJwtException e){
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("token已过期，重新登录");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
             return ServerResponse.createByErrorMessage("token验证出错或者其他错误,请检查token");
         }
-        if(account1.equals(account)){
+        if(account1==null||!account1.equals(account)){
             return ServerResponse.createByErrorMessage("token与用户不匹配");
         }
         boolean result=updateLoginStatus(account,false);
@@ -111,13 +114,12 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     public ServerResponse login(UserForm userForm){
-
+        if(StringUtils.isEmpty(userForm.getAccount())||
+                StringUtils.isEmpty(userForm.getPassword())||
+                userForm.getType()==null){
+            return ServerResponse.createByErrorMessage("参数错误");
+        }
         try{
-            if(StringUtils.isEmpty(userForm.getAccount())||
-                    StringUtils.isEmpty(userForm.getPassword())||
-                    userForm.getType()==null){
-                return ServerResponse.createByErrorMessage("参数错误");
-            }
             String password=accountMapper.selectPasswordByAccount(userForm.getAccount());
             if(password==null){
                 return ServerResponse.createByErrorMessage("该用户不存在");
@@ -138,6 +140,7 @@ public class UserServiceImpl implements IUserService {
             }
         }catch (Exception e){
             logger.error("未知错误，可能是数据库查询出错");
+            e.printStackTrace();
             return ServerResponse.createByErrorMessage("未知错误，可能是数据库查询出错");
         }
 

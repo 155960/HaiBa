@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ public class UserController {
         ServerResponse serverResponse=
                 userService.login(userForm);
         if(serverResponse.isSuccess()){
+            //这里存入什么待定
             Map<String,Object> claims=new HashMap<>();
             claims.put("account",userForm.getAccount());
             claims.put("type",userForm.getType());
@@ -62,8 +64,8 @@ public class UserController {
 
     @RequestMapping(value = "/logout" ,method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse logout(String account,HttpServletResponse response){
-        String token=response.getHeader("Authorization");
+    public ServerResponse logout(String account,HttpServletRequest request){
+        String token=request.getHeader("Authorization");
         return userService.logout(account,token);
     }
 }

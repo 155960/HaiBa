@@ -8,5 +8,5 @@ public interface IUserService {
     ServerResponse login(UserForm userForm);
     boolean updateLoginStatus(String account ,boolean isLogin);
     ServerResponse logout(String account,String token);
-    String checkToken(String token);
+    String checkToken(String token) throws Exception;
 }
