@@ -162,6 +162,7 @@ public class UserServiceImpl implements IUserService {
             }
 
             user.setAccountId(account.getId());
+            user.setEmail(account.getAccount());
             userMapper.insert(user);
 
             //数据中普通用户id=2

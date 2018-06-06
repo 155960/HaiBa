@@ -47,7 +47,7 @@ public class UserController {
             Map<String,Object> claims=new HashMap<>();
             claims.put("account",userForm.getAccount());
             claims.put("type",userForm.getType());
-            String token= TokenUtil.createToken(userForm.getAccount(),claims,100000);
+            String token= TokenUtil.createToken(userForm.getAccount(),claims,360000000);
             response.addHeader("Authorization",token);
             //更新登录状态
             boolean isSuccess=userService.updateLoginStatus(userForm.getAccount(),true);

@@ -1,5 +1,8 @@
 package com.zengqiang.future.form;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonSerialize(include =  JsonSerialize.Inclusion.NON_NULL)
 public class UserForm {
 
     private Integer type;
