@@ -127,4 +127,15 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="insetItems" parameterType="arraylist" >
+    INSERT into item(
+    <include refid="Base_Column_List" />)
+    VALUES
+    <foreach collection="list" item="item" separator="," close=";" index="index">
+      (#{item.id,jdbcType=INTEGER}, #{item.postId,jdbcType=INTEGER}, #{item.title,jdbcType=VARCHAR},
+      #{item.itemDescribe,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.number,jdbcType=INTEGER},
+      now(), now())
+    </foreach>
+  </insert>
 </mapper>

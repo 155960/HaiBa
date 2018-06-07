@@ -1,22 +1,22 @@
 package com.zengqiang.future.pojo;
 
-public class ItemAddr {
+public class UserAddr {
     private Integer id;
 
     private Integer type;
 
-    private Integer itemId;
+    private Integer userId;
 
     private Integer addrId;
 
-    public ItemAddr(Integer id, Integer type, Integer itemId, Integer addrId) {
+    public UserAddr(Integer id, Integer type, Integer userId, Integer addrId) {
         this.id = id;
         this.type = type;
-        this.itemId = itemId;
+        this.userId = userId;
         this.addrId = addrId;
     }
 
-    public ItemAddr() {
+    public UserAddr() {
         super();
     }
 
@@ -36,12 +36,12 @@ public class ItemAddr {
         this.type = type;
     }
 
-    public Integer getItemId() {
-        return itemId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setItemId(Integer itemId) {
-        this.itemId = itemId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getAddrId() {

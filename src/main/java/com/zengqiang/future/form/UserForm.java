@@ -2,8 +2,9 @@ package com.zengqiang.future.form;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@JsonSerialize(include =  JsonSerialize.Inclusion.NON_NULL)
-public class UserForm {
+import java.io.Serializable;
+
+public class UserForm implements Serializable{
 
     private Integer type;
 

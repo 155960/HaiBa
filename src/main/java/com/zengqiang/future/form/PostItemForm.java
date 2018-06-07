@@ -1,13 +1,44 @@
 package com.zengqiang.future.form;
 
-public class PostForm {
+import java.util.List;
+
+public class PostItemForm {
+
     private Integer userId;
 
     private Integer type;
 
-    private Integer itemId;
+    private Integer addrId;
 
     private Integer isEnabledComment;
+
+    private String content;
+
+    private List<ItemForm> items;
+
+    public List<ItemForm> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemForm> items) {
+        this.items = items;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Integer getAddrId() {
+        return addrId;
+    }
+
+    public void setAddrId(Integer addrId) {
+        this.addrId = addrId;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -23,14 +54,6 @@ public class PostForm {
 
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public Integer getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Integer itemId) {
-        this.itemId = itemId;
     }
 
     public Integer getIsEnabledComment() {

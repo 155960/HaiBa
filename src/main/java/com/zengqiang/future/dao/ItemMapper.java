@@ -2,6 +2,8 @@ package com.zengqiang.future.dao;
 
 import com.zengqiang.future.pojo.Item;
 
+import java.util.List;
+
 public interface ItemMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,6 @@ public interface ItemMapper {
     int updateByPrimaryKeySelective(Item record);
 
     int updateByPrimaryKey(Item record);
+
+    int insetItems(List<Item> items);
 }
