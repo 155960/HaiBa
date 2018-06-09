@@ -26,7 +26,9 @@ public class TestService {
     ItemMapper itemMapper;
 
     public void test(){
-        List<Item> items=new ArrayList<>();
+
+        itemMapper.deleteByPrimaryKey(18);
+        /*List<Item> items=new ArrayList<>();
         for(int i=1;i<5;i++){
             Item item=new Item();
             item.setPrice(new BigDecimal(23.1));
@@ -35,7 +37,7 @@ public class TestService {
             item.setItemDescribe("3435");
             items.add(item);
         }
-        itemMapper.insetItems(items);
+        itemMapper.insetItems(items);*/
     }
 
     public static void main(String[] args) {

@@ -1,19 +1,19 @@
 package com.zengqiang.future.pojo;
 
-public class Adress {
+public class Address {
     private Integer id;
 
     private String name;
 
     private String addrDetail;
 
-    public Adress(Integer id, String name, String addrDetail) {
+    public Address(Integer id, String name, String addrDetail) {
         this.id = id;
         this.name = name;
         this.addrDetail = addrDetail;
     }
 
-    public Adress() {
+    public Address() {
         super();
     }
 

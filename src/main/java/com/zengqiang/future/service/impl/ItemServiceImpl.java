@@ -4,7 +4,7 @@ import com.zengqiang.future.service.IItemService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ItemService implements IItemService {
+public class ItemServiceImpl implements IItemService {
 
 
 }

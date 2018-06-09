@@ -18,4 +18,10 @@ public interface ItemMapper {
     int updateByPrimaryKey(Item record);
 
     int insetItems(List<Item> items);
+
+    int updateItems(List<Item> items);
+
+    int deleteByPostId(Integer postId);
+
+    List<Item> selectItemsByPostId(Integer postId);
 }

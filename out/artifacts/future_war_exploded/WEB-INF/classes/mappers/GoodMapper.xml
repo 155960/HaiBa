@@ -25,7 +25,7 @@
     delete from good
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zengqiang.future.pojo.Good" >
+  <insert id="insert" parameterType="com.zengqiang.future.pojo.Good" useGeneratedKeys="true" keyProperty="id">
     insert into good (id, post_id, type, 
       order_num, url, upload_time, 
       overdue_time)
@@ -116,4 +116,9 @@
       overdue_time = #{overdueTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectGoodsByPostIdAndType" parameterType="map" resultType="com.zengqiang.future.pojo.Good">
+    SELECT * FROM good
+    WHERE post_id=#{postId} and type=#{type}
+  </select>
 </mapper>

@@ -19,10 +19,24 @@ public class PostController {
     private IPostService postService;
 
     @RequestMapping("/create_item")
-    @ResponseBody
     public ServerResponse createPost(@RequestBody PostItemForm itemForm){
         return postService.createPostItem(itemForm);
-
     }
+
+    @RequestMapping("/update")
+    public ServerResponse update(@RequestBody PostItemForm itemForm){
+        return postService.update(itemForm);
+    }
+
+    @RequestMapping("/delete")
+    public ServerResponse delete(int postId){
+        return postService.delete(postId);
+    }
+
+    @RequestMapping("/detail")
+    public ServerResponse detail(int postId,int type){
+        return postService.detail(postId,type);
+    }
+
 
 }

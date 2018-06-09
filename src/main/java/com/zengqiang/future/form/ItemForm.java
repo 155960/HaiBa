@@ -3,6 +3,9 @@ package com.zengqiang.future.form;
 import java.math.BigDecimal;
 
 public class ItemForm {
+
+    private Integer id;
+
     private Integer postId;
 
     private String title;
@@ -12,6 +15,14 @@ public class ItemForm {
     private BigDecimal price;
 
     private Integer number;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getPostId() {
         return postId;

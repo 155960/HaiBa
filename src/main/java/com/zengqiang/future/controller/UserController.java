@@ -3,7 +3,9 @@ package com.zengqiang.future.controller;
 import com.zengqiang.future.common.ServerResponse;
 import com.zengqiang.future.form.UserForm;
 import com.zengqiang.future.pojo.Account;
+import com.zengqiang.future.pojo.Post;
 import com.zengqiang.future.pojo.User;
+import com.zengqiang.future.service.IFileService;
 import com.zengqiang.future.service.IUserService;
 import com.zengqiang.future.util.TokenUtil;
 import org.slf4j.Logger;
@@ -13,12 +15,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -67,5 +71,20 @@ public class UserController {
     public ServerResponse logout(String account,HttpServletRequest request){
         String token=request.getHeader("Authorization");
         return userService.logout(account,token);
+    }
+
+    @RequestMapping("/my_post")
+    @ResponseBody
+    public ServerResponse findMyPost(HttpServletRequest request){
+        String token=request.getHeader("Authorization");
+        Integer userId=TokenUtil.getUserId(token);
+        return userService.findMyPost(userId);
+    }
+
+    @RequestMapping("/upload_head_picture")
+    public ServerResponse uploadHeadPicture(MultipartFile file,HttpServletRequest request){
+        String token=request.getHeader("Authorization");
+        Integer userId=TokenUtil.getUserId(token);
+        return userService.uploadHeadImg(file,userId);
     }
 }

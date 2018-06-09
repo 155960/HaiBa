@@ -133,9 +133,9 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+
+        update_time = now()
+
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -152,4 +152,11 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectPostsByUserId" parameterType="int" resultType="com.zengqiang.future.pojo.Post">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM post
+    WHERE user_id=#{id}
+  </select>
 </mapper>

@@ -18,4 +18,6 @@ public interface UserMapper {
     User selectByAccountId(Integer id);
 
     int updateByAccountId(User user);
+
+    Integer selectIdByAccountId(Integer accountId);
 }

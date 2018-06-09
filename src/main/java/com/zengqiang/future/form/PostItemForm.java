@@ -4,6 +4,8 @@ import java.util.List;
 
 public class PostItemForm {
 
+    private Integer id;
+
     private Integer userId;
 
     private Integer type;
@@ -15,6 +17,14 @@ public class PostItemForm {
     private String content;
 
     private List<ItemForm> items;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public List<ItemForm> getItems() {
         return items;
