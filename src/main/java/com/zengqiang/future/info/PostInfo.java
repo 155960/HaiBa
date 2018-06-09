@@ -8,6 +8,10 @@ public class PostInfo {
 
     private Integer type;
 
+    private Integer numPraise;
+
+    private Integer numComment;
+
     private String addr;
 
     private Integer isEnabledComment;
@@ -15,6 +19,22 @@ public class PostInfo {
     private String content;
 
     private Date updateTime;
+
+    public Integer getNumPraise() {
+        return numPraise;
+    }
+
+    public void setNumPraise(Integer numPraise) {
+        this.numPraise = numPraise;
+    }
+
+    public Integer getNumComment() {
+        return numComment;
+    }
+
+    public void setNumComment(Integer numComment) {
+        this.numComment = numComment;
+    }
 
     public Integer getId() {
         return id;

@@ -177,4 +177,33 @@ public class PostServiceImpl implements IPostService {
         post.setId(form.getId());
         return post;
     }
+
+    /**
+     *
+     * @param f true 点赞 false 取消
+     * @return
+     */
+    public ServerResponse praise(int postId,boolean f){
+        final String p=postId+"praise";
+        try{
+            synchronized (p){
+                int praiseNum=postMapper.selectPraiseById(postId);
+                if(f){
+                    praiseNum+=1;
+
+                }else{
+                    praiseNum-=1;
+                }
+                Post post=new Post();
+                post.setId(postId);
+                post.setNumPraise(praiseNum);
+                postMapper.updateByPrimaryKeySelective(post);
+                return ServerResponse.createBySuccess();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return ServerResponse.createByError();
+        }
+
+    }
 }
