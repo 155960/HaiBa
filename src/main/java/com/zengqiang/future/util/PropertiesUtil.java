@@ -12,10 +12,10 @@ public class PropertiesUtil {
     private static Properties props;
 
     static {
-        String fileNname="ftp.properties";
+        String fileName="ftp.properties";
         props=new Properties();
         try {
-            props.load(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileNname));
+            props.load(PropertiesUtil.class.getClassLoader().getResourceAsStream(fileName));
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("配置文件错误",e);

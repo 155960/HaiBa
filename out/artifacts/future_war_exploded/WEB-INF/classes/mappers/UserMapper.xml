@@ -155,9 +155,7 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now()
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -219,4 +217,9 @@
     </set>
     where account_id = #{accountId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectIdByAccountId" parameterType="int" resultType="int">
+    SELECT id from user
+    WHERE account_id=#{id}
+  </select>
 </mapper>

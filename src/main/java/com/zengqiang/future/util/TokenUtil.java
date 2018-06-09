@@ -94,7 +94,16 @@ public class TokenUtil {
         return claims;
     }
 
+    public static Integer getUserId(String token){
+        Claims claims=checkToken(token);
+        if (claims!=null){
+            return (int)claims.get("userId");
+        }
+        return null;
+    }
+
     public static Claims checkToken(String token){
+
         SecretKey key = generalKey();  //签名秘钥，和生成的签名的秘钥一模一样
         Claims claims = Jwts.parser()  //得到DefaultJwtParser
                 .setSigningKey(key)         //设置签名的秘钥
@@ -102,6 +111,16 @@ public class TokenUtil {
         return claims;
     }
 
+    public static boolean authenticate(String token) throws Exception{
+        if(token==null){
+            return false;
+        }
+        Claims claims=checkToken(token);
+        if(claims==null){
+            return false;
+        }
+        return true;
+    }
 
     /**
      * 由字符串生成加密key

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zengqiang.future.dao.AdressMapper" >
-  <resultMap id="BaseResultMap" type="com.zengqiang.future.pojo.Adress" >
+<mapper namespace="com.zengqiang.future.dao.AddressMapper" >
+  <resultMap id="BaseResultMap" type="com.zengqiang.future.pojo.Address" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -21,13 +21,13 @@
     delete from address
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zengqiang.future.pojo.Adress" >
+  <insert id="insert" parameterType="com.zengqiang.future.pojo.Address" >
     insert into address (id, name, addr_detail
       )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{addrDetail,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.Adress" >
+  <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.Address" >
     insert into address
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -52,7 +52,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zengqiang.future.pojo.Adress" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.zengqiang.future.pojo.Address" >
     update address
     <set >
       <if test="name != null" >
@@ -64,7 +64,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zengqiang.future.pojo.Adress" >
+  <update id="updateByPrimaryKey" parameterType="com.zengqiang.future.pojo.Address" >
     update address
     set name = #{name,jdbcType=VARCHAR},
       addr_detail = #{addrDetail,jdbcType=VARCHAR}

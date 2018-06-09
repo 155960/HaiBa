@@ -29,15 +29,15 @@
     delete from post
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zengqiang.future.pojo.Post" >
+  <insert id="insert" parameterType="com.zengqiang.future.pojo.Post" useGeneratedKeys="true" keyProperty="id">
     insert into post (id, user_id, type, 
       addr_id, content, num_praise, 
       num_comment, is_enabled_comment, create_time, 
       update_time)
     values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
       #{addrId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{numPraise,jdbcType=INTEGER}, 
-      #{numComment,jdbcType=INTEGER}, #{isEnabledComment,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{numComment,jdbcType=INTEGER}, #{isEnabledComment,jdbcType=INTEGER}, now(),
+     now())
   </insert>
   <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.Post" >
     insert into post
@@ -133,9 +133,9 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+
+        update_time = now()
+
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -152,4 +152,11 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectPostsByUserId" parameterType="int" resultType="com.zengqiang.future.pojo.Post">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM post
+    WHERE user_id=#{id}
+  </select>
 </mapper>

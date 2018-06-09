@@ -1,30 +1,32 @@
 package com.zengqiang.future.service.impl;
 
+import com.zengqiang.future.common.Const;
 import com.zengqiang.future.common.ServerResponse;
-import com.zengqiang.future.dao.AccountMapper;
-import com.zengqiang.future.dao.RolePerMapper;
-import com.zengqiang.future.dao.UserMapper;
-import com.zengqiang.future.dao.UserRoleMapper;
+import com.zengqiang.future.dao.*;
 import com.zengqiang.future.form.UserForm;
-import com.zengqiang.future.pojo.Account;
-import com.zengqiang.future.pojo.RolePer;
-import com.zengqiang.future.pojo.User;
-import com.zengqiang.future.pojo.UserRole;
+import com.zengqiang.future.info.PostInfo;
+import com.zengqiang.future.info.UserInfo;
+import com.zengqiang.future.pojo.*;
+import com.zengqiang.future.service.IFileService;
 import com.zengqiang.future.service.IUserService;
 import com.zengqiang.future.util.EncryptUtil;
 import com.zengqiang.future.util.TokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import net.sf.jsqlparser.schema.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -41,14 +43,98 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private RolePerMapper rolePerMapper;
 
+    @Autowired
+    private PostMapper postMapper;
+
+    @Autowired
+    private GoodMapper goodMapper;
+
+    @Autowired
+    private IFileService fileService;
+
+    @Autowired
+    private AddressMapper addressMapper;
+
+    @Transactional
+    public ServerResponse uploadHeadImg(MultipartFile file,Integer userId){
+        String url=fileService.upload(file, Const.Good.IMG);
+        if(StringUtils.isEmpty(url)){
+            return ServerResponse.createByErrorMessage("上传失败");
+        }else{
+            Good good=new Good();
+            good.setUrl(url);
+            good.setType(Const.Good.IMG);
+            goodMapper.insert(good);
+            User user=new User();
+            user.setImageId(good.getId());
+            int rowCount=userMapper.updateByPrimaryKeySelective(user);
+            if(rowCount>0){
+                return ServerResponse.createBySuccess();
+            }else{
+                return ServerResponse.createByErrorMessage("更新失败");
+            }
+        }
+    }
+
+    /**
+     *
+     * @param
+     * @return
+     */
+    public ServerResponse findMyPost(Integer userId){
+        try{
+            List<Post> posts=postMapper.selectPostsByUserId(userId);
+            if(posts!=null&&posts.size()>0){
+                List<PostInfo> infos=postToPostInfo(posts);
+                return ServerResponse.createBySuccess(infos);
+            }else{
+                return ServerResponse.createBySuccessMessage("不存在帖子信息");
+            }
+
+        }catch (Exception e){
+            return ServerResponse.createByErrorMessage("查询失败");
+        }
+    }
+
+    private List<PostInfo> postToPostInfo(List<Post> posts){
+        List<PostInfo> infos=new ArrayList<>();
+        for(int i=0;i<posts.size();i++){
+            PostInfo info=postToPostInfo(posts.get(i));
+            infos.add(info);
+        }
+        return infos;
+    }
+
+    private PostInfo postToPostInfo(Post post){
+        PostInfo info=new PostInfo();
+        info.setContent(post.getContent());
+        info.setId(post.getId());
+        info.setType(post.getType());
+        info.setIsEnabledComment(post.getIsEnabledComment());
+        info.setUpdateTime(post.getUpdateTime());
+
+        try{
+            Address addr=addressMapper.selectByPrimaryKey(post.getAddrId());
+            if(addr!=null){
+                info.setAddr(addr.getAddrDetail());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.error("查询地址失败");
+        }
+
+        return info;
+    }
+
+    //可省略
     public String checkToken(String token)throws Exception{
         if(token==null){
             return null;
         }
-            Claims claims=TokenUtil.checkToken(token);
-            if(claims!=null){
-                return (String)claims.get("account");
-            }
+        Claims claims=TokenUtil.checkToken(token);
+        if(claims!=null){
+            return (String)claims.get("account");
+        }
         return null;
     }
 
@@ -56,7 +142,6 @@ public class UserServiceImpl implements IUserService {
         if(account==null||token==null){
             return ServerResponse.createByErrorMessage("参数错误");
         }
-
         String account1= null;
         try {
             account1 = checkToken(token);
@@ -77,7 +162,6 @@ public class UserServiceImpl implements IUserService {
         }else{
             return ServerResponse.createByErrorMessage("该用户不存在");
         }
-
     }
 
     /**
@@ -131,10 +215,12 @@ public class UserServiceImpl implements IUserService {
                 int roleId=userRoleMapper.selectRoleIdByAccountId(id);
                 //权限代码
                 int perCode=rolePerMapper.selectCodeByRoleId(roleId);
-                UserForm form=userToUserForm(user);
-                form.setPerCode(perCode);
-                form.setAccount(userForm.getAccount());
-                return ServerResponse.createBySuccess(form);
+                UserInfo info=userToUserInfo(user);
+                info.setAccount(userForm.getAccount());
+                info.setCode(perCode);
+                String imgUrl=goodMapper.selectByPrimaryKey(user.getId()).getUrl();
+                info.setImg(imgUrl);
+                return ServerResponse.createBySuccess(info);
             }else{
                 return ServerResponse.createByErrorMessage("密码与用户名不匹配");
             }
@@ -222,5 +308,17 @@ public class UserServiceImpl implements IUserService {
         userForm.setPhone(user.getPhone());
         userForm.setQqNumber(user.getQqNumber());
         return userForm;
+    }
+
+    private UserInfo userToUserInfo(User user){
+        UserInfo info=new UserInfo();
+        info.setMessages(user.getMessages());
+        info.setEmail(user.getEmail());
+        info.setNickName(user.getNickName());
+        info.setPersonalIndroduce(user.getPersonalIndroduce());
+        info.setPhone(user.getPhone());
+        info.setQqNumber(user.getQqNumber());
+        info.setCreateTime(user.getCreateTime());
+        return info;
     }
 }

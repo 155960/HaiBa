@@ -1,21 +1,17 @@
-package com.zengqiang.future.form;
+package com.zengqiang.future.info;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.zengqiang.future.pojo.Address;
 
-import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
-public class UserForm implements Serializable{
 
-    private Integer type;
-
+public class UserInfo {
     private String account;
-
-    private String password;
-
     private String nickName;
-
-    private Integer imageId;
-
+    private Integer messages;
+    //头像url
+    private String img;
     private String personalIndroduce;
 
     private String qqNumber;
@@ -24,22 +20,27 @@ public class UserForm implements Serializable{
 
     private String phone;
 
-    private int perCode;
+    private Date updateTime;
 
-    public int getPerCode() {
-        return perCode;
+    //权限代码
+    private int code;
+
+    private List<AddressInfo> addresses;
+
+    public int getCode() {
+        return code;
     }
 
-    public void setPerCode(int perCode) {
-        this.perCode = perCode;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public Integer getType() {
-        return type;
+    public List<AddressInfo> getAddresses() {
+        return addresses;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setAddresses(List<AddressInfo> addresses) {
+        this.addresses = addresses;
     }
 
     public String getAccount() {
@@ -50,14 +51,6 @@ public class UserForm implements Serializable{
         this.account = account;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getNickName() {
         return nickName;
     }
@@ -66,12 +59,20 @@ public class UserForm implements Serializable{
         this.nickName = nickName;
     }
 
-    public Integer getImageId() {
-        return imageId;
+    public Integer getMessages() {
+        return messages;
     }
 
-    public void setImageId(Integer imageId) {
-        this.imageId = imageId;
+    public void setMessages(Integer messages) {
+        this.messages = messages;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public String getPersonalIndroduce() {
@@ -104,5 +105,13 @@ public class UserForm implements Serializable{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Date getCreateTime() {
+        return updateTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.updateTime = createTime;
     }
 }

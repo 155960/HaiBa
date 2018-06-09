@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zengqiang.future.dao.ItemAddrMapper" >
-  <resultMap id="BaseResultMap" type="com.zengqiang.future.pojo.ItemAddr" >
+<mapper namespace="com.zengqiang.future.dao.UserAddrMapper" >
+  <resultMap id="BaseResultMap" type="com.zengqiang.future.pojo.UserAddr" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="type" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="item_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="user_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="addr_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, type, item_id, addr_id
+    id, type, user_id, addr_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from item_addr
+    from user_addr
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from item_addr
+    delete from user_addr
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zengqiang.future.pojo.ItemAddr" >
-    insert into item_addr (id, type, item_id, 
+  <insert id="insert" parameterType="com.zengqiang.future.pojo.UserAddr" >
+    insert into user_addr (id, type, user_id, 
       addr_id)
-    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{itemId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
       #{addrId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.ItemAddr" >
-    insert into item_addr
+  <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.UserAddr" >
+    insert into user_addr
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -37,8 +37,8 @@
       <if test="type != null" >
         type,
       </if>
-      <if test="itemId != null" >
-        item_id,
+      <if test="userId != null" >
+        user_id,
       </if>
       <if test="addrId != null" >
         addr_id,
@@ -51,22 +51,22 @@
       <if test="type != null" >
         #{type,jdbcType=INTEGER},
       </if>
-      <if test="itemId != null" >
-        #{itemId,jdbcType=INTEGER},
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="addrId != null" >
         #{addrId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zengqiang.future.pojo.ItemAddr" >
-    update item_addr
+  <update id="updateByPrimaryKeySelective" parameterType="com.zengqiang.future.pojo.UserAddr" >
+    update user_addr
     <set >
       <if test="type != null" >
         type = #{type,jdbcType=INTEGER},
       </if>
-      <if test="itemId != null" >
-        item_id = #{itemId,jdbcType=INTEGER},
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
       <if test="addrId != null" >
         addr_id = #{addrId,jdbcType=INTEGER},
@@ -74,10 +74,10 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zengqiang.future.pojo.ItemAddr" >
-    update item_addr
+  <update id="updateByPrimaryKey" parameterType="com.zengqiang.future.pojo.UserAddr" >
+    update user_addr
     set type = #{type,jdbcType=INTEGER},
-      item_id = #{itemId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
       addr_id = #{addrId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>

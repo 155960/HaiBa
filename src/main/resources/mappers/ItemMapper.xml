@@ -127,4 +127,83 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="insetItems" parameterType="list" >
+    INSERT into item(
+    <include refid="Base_Column_List" />)
+    VALUES
+    <foreach collection="list" item="item" separator="," close=";" index="index">
+      (#{item.id,jdbcType=INTEGER}, #{item.postId,jdbcType=INTEGER}, #{item.title,jdbcType=VARCHAR},
+      #{item.itemDescribe,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.number,jdbcType=INTEGER},
+      now(), now())
+    </foreach>
+  </insert>
+  <!--id不更新，create_time不更新-->
+  <update id="updateItems" parameterType="list">
+
+    update item
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="post_id =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.postId !=null">
+            when id=#{item.id} then #{item.postId}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="title =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.title !=null">
+            when id=#{item.id} then #{item.title}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="item_describe =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.itemDescribe !=null">
+            when id=#{item.id} then #{item.itemDescribe}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="price =case" suffix="end,">
+      <foreach collection="list" item="item" index="index">
+        <if test="item.price !=null">
+          when id=#{item.id} then #{item.price}
+        </if>
+      </foreach>
+    </trim>
+
+      <trim prefix="number =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          <if test="item.number !=null">
+            when id=#{item.id} then #{item.number}
+          </if>
+        </foreach>
+      </trim>
+
+      <trim prefix="update_time =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+            when id=#{item.id} then now()
+        </foreach>
+      </trim>
+    </trim>
+
+    where id in
+    <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+      #{item.id,jdbcType=Integer}
+    </foreach>
+  </update>
+
+  <delete id="deleteByPostId" parameterType="int">
+    delete from item
+    where post_id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <select id="selectItemsByPostId" parameterType="int" resultType="com.zengqiang.future.pojo.Item">
+    SELECT *
+    FROM item
+    WHERE post_id =#{id}
+  </select>
 </mapper>
