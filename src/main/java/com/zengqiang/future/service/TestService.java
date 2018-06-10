@@ -25,9 +25,19 @@ public class TestService {
     @Autowired
     ItemMapper itemMapper;
 
+    @Autowired
+    private IPostService postService;
+
     public void test(){
 
-        itemMapper.deleteByPrimaryKey(18);
+        for(int i=0;i<100;i++){
+
+            postService.praise(1,false);
+
+        }
+
+
+       // itemMapper.deleteByPrimaryKey(18);
         /*List<Item> items=new ArrayList<>();
         for(int i=1;i<5;i++){
             Item item=new Item();

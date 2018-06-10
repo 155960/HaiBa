@@ -6,6 +6,7 @@ import java.util.List;
 
 public class ItemInfo {
     private Integer id;
+
     private String title;
 
     private String itemDescribe;

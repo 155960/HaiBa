@@ -40,7 +40,6 @@ public class UserController {
         return userService.register(userForm);
     }
 
-
     @RequestMapping(value = "/login" ,method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse login(UserForm userForm, HttpServletResponse response){

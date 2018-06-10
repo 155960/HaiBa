@@ -18,4 +18,9 @@ public interface PostMapper {
     int updateByPrimaryKey(Post record);
 
     List<Post> selectPostsByUserId(Integer userId);
+
+    int selectCommentById(Integer id);
+
+    int selectPraiseById(Integer postId);
+
 }

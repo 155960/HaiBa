@@ -24,12 +24,12 @@
     delete from comments
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zengqiang.future.pojo.Comments" >
+  <insert id="insert" parameterType="com.zengqiang.future.pojo.Comments" useGeneratedKeys="true" keyProperty="id">
     insert into comments (id, content, post_id, 
       user_id, num_reply, comment_time
       )
     values (#{id,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, #{postId,jdbcType=INTEGER}, 
-      #{userId,jdbcType=INTEGER}, #{numReply,jdbcType=INTEGER}, #{commentTime,jdbcType=TIMESTAMP}
+      #{userId,jdbcType=INTEGER}, #{numReply,jdbcType=INTEGER}, now()
       )
   </insert>
   <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.Comments" >

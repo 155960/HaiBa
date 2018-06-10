@@ -38,5 +38,14 @@ public class PostController {
         return postService.detail(postId,type);
     }
 
+    @RequestMapping("/praise")
+    public ServerResponse praise(int postId){
+        return postService.praise(postId,true);
+    }
+
+    @RequestMapping("/unpraise")
+    public ServerResponse unpraise(int postId){
+        return postService.praise(postId,false);
+    }
 
 }

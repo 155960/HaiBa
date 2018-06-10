@@ -112,7 +112,8 @@ public class UserServiceImpl implements IUserService {
         info.setType(post.getType());
         info.setIsEnabledComment(post.getIsEnabledComment());
         info.setUpdateTime(post.getUpdateTime());
-
+        info.setNumComment(post.getNumComment());
+        info.setNumPraise(post.getNumPraise());
         try{
             Address addr=addressMapper.selectByPrimaryKey(post.getAddrId());
             if(addr!=null){

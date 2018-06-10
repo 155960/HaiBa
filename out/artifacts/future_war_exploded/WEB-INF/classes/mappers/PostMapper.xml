@@ -159,4 +159,14 @@
     FROM post
     WHERE user_id=#{id}
   </select>
+
+  <select id="selectCommentById" parameterType="int" resultType="java.lang.Integer">
+    SELECT num_comment FROM post
+    WHERE id=#{id}
+  </select>
+
+  <select id="selectPraiseById" resultType="java.lang.Integer">
+    SELECT num_praise from post
+    WHERE id=#{id}
+  </select>
 </mapper>

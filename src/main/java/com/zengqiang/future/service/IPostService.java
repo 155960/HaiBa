@@ -8,4 +8,5 @@ public interface IPostService {
     ServerResponse update(PostItemForm form);
     ServerResponse delete(int postId);
     ServerResponse detail(int postId,int type);
+    ServerResponse praise(int postId,boolean f);
 }
