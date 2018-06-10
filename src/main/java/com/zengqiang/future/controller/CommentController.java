@@ -20,13 +20,13 @@ public class CommentController {
     @Autowired
     private ICommentService commentService;
 
+    @RequestMapping("")
     public ServerResponse comment(@RequestBody CommentForm form, HttpServletRequest request){
         int userId= TokenUtil.getUserId(request.getHeader("Authorization"));
         if(form!=null){
             form.setUserId(userId);
         }
         return commentService.comment(form);
-
     }
 
 }
