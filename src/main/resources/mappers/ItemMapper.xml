@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zengqiang.future.dao.ItemMapper" >
+    <resultMap id="BaseResultMap" type="com.zengqiang.future.pojo.Item" >
+        <constructor >
+            <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+            <arg column="post_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+            <arg column="title" jdbcType="VARCHAR" javaType="java.lang.String" />
+            <arg column="item_describe" jdbcType="VARCHAR" javaType="java.lang.String" />
+            <arg column="price" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+            <arg column="number" jdbcType="INTEGER" javaType="java.lang.Integer" />
+            <arg column="create_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+            <arg column="update_time" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+        </constructor>
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, post_id, title, item_describe, price, number, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from item
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from item
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.zengqiang.future.pojo.Item" >
+        insert into item (id, post_id, title,
+        item_describe, price, number,
+        create_time, update_time)
+        values (#{id,jdbcType=INTEGER}, #{postId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+        #{itemDescribe,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{number,jdbcType=INTEGER},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.zengqiang.future.pojo.Item" >
+        insert into item
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="postId != null" >
+                post_id,
+            </if>
+            <if test="title != null" >
+                title,
+            </if>
+            <if test="itemDescribe != null" >
+                item_describe,
+            </if>
+            <if test="price != null" >
+                price,
+            </if>
+            <if test="number != null" >
+                number,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="updateTime != null" >
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="postId != null" >
+                #{postId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null" >
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="itemDescribe != null" >
+                #{itemDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="number != null" >
+                #{number,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.zengqiang.future.pojo.Item" >
+        update item
+        <set >
+            <if test="postId != null" >
+                post_id = #{postId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="itemDescribe != null" >
+                item_describe = #{itemDescribe,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null" >
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="number != null" >
+                number = #{number,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.zengqiang.future.pojo.Item" >
+        update item
+        set post_id = #{postId,jdbcType=INTEGER},
+        title = #{title,jdbcType=VARCHAR},
+        item_describe = #{itemDescribe,jdbcType=VARCHAR},
+        price = #{price,jdbcType=DECIMAL},
+        number = #{number,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="insetItems" parameterType="list" >
+        INSERT into item(
+        <include refid="Base_Column_List" />)
+        VALUES
+        <foreach collection="list" item="item" separator="," close=";" index="index">
+            (#{item.id,jdbcType=INTEGER}, #{item.postId,jdbcType=INTEGER}, #{item.title,jdbcType=VARCHAR},
+            #{item.itemDescribe,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.number,jdbcType=INTEGER},
+            now(), now())
+        </foreach>
+    </insert>
+    <!--id不更新，create_time不更新-->
+    <update id="updateItems" parameterType="list">
+
+        update item
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="post_id =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.postId !=null">
+                        when id=#{item.id} then #{item.postId}
+                    </if>
+                </foreach>
+            </trim>
+
+            <trim prefix="title =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.title !=null">
+                        when id=#{item.id} then #{item.title}
+                    </if>
+                </foreach>
+            </trim>
+
+            <trim prefix="item_describe =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.itemDescribe !=null">
+                        when id=#{item.id} then #{item.itemDescribe}
+                    </if>
+                </foreach>
+            </trim>
+
+            <trim prefix="price =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.price !=null">
+                        when id=#{item.id} then #{item.price}
+                    </if>
+                </foreach>
+            </trim>
+
+            <trim prefix="number =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    <if test="item.number !=null">
+                        when id=#{item.id} then #{item.number}
+                    </if>
+                </foreach>
+            </trim>
+
+            <trim prefix="update_time =case" suffix="end,">
+                <foreach collection="list" item="item" index="index">
+                    when id=#{item.id} then now()
+                </foreach>
+            </trim>
+        </trim>
+        where id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=INTEGER}
+        </foreach>
+    </update>
+
+    <delete id="deleteByPostId" parameterType="int">
+        delete from item
+        where post_id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <select id="selectItemsByPostId" parameterType="int" resultType="com.zengqiang.future.pojo.Item">
+        SELECT *
+        FROM item
+        WHERE post_id =#{id}
+    </select>
+</mapper>
