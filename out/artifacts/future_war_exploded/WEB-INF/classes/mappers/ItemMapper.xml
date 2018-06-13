@@ -189,10 +189,9 @@
         </foreach>
       </trim>
     </trim>
-
     where id in
     <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
-      #{item.id,jdbcType=Integer}
+      #{item.id,jdbcType=INTEGER}
     </foreach>
   </update>
 

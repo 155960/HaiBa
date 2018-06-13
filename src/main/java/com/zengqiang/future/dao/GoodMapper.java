@@ -12,6 +12,8 @@ public interface GoodMapper {
 
     int insertSelective(Good record);
 
+    int insertGoods(List<Good> goods);
+
     Good selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(Good record);

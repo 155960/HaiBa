@@ -18,6 +18,7 @@ public class TokenFilter implements Filter {
 
     }
 
+    //不能重复获得printwriter
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request=(HttpServletRequest)servletRequest;
@@ -25,38 +26,46 @@ public class TokenFilter implements Filter {
 
         //登录页不做token验证
         String path=request.getRequestURL().toString();
-        if(path.indexOf("/login")>-1){
+        if(path.indexOf("/login")>-1||path.indexOf("/register")>-1){
             filterChain.doFilter(servletRequest,servletResponse);
             return;
         }
 
         response.setContentType("application/json; charset=utf-8");
         response.setCharacterEncoding("UTF-8");
-        PrintWriter writer=response.getWriter();
+        PrintWriter writer=null;
         String token=request.getHeader("Authorization");
-
+        boolean result=false;
         try {
-            boolean result=TokenUtil.authenticate(token);
+            result=TokenUtil.authenticate(token);
             if(result){
                 filterChain.doFilter(servletRequest,servletResponse);
                 return;
-            }else{
+            }
+            else{
+                writer=response.getWriter();
                 writer.append(JSON.toJSONString(ServerResponse.createByErrorMessage("token错误，重新登录")));
                 return;
             }
         }catch (ExpiredJwtException e){
             e.printStackTrace();
+            writer=response.getWriter();
             writer.append(JSON.toJSONString(ServerResponse.createByErrorMessage("token过期，重新登录")));
             return;
         }
         catch (Exception e) {
             e.printStackTrace();
+            writer=response.getWriter();
             writer.append(JSON.toJSONString(ServerResponse.createByErrorMessage("token未知错误，重新登录")));
             return;
         }finally {
-            writer.flush();
-            writer.close();
+            if(writer!=null){
+                writer.flush();
+                writer.close();
+            }
+
         }
+
     }
 
     @Override

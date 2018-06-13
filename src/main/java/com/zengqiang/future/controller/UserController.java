@@ -86,4 +86,9 @@ public class UserController {
         Integer userId=TokenUtil.getUserId(token);
         return userService.uploadHeadImg(file,userId);
     }
+
+    @RequestMapping("/add_addr")
+    public ServerResponse addAddr(){
+        return null;
+    }
 }

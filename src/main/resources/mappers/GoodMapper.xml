@@ -121,4 +121,16 @@
     SELECT * FROM good
     WHERE post_id=#{postId} and type=#{type}
   </select>
+
+  <insert id="insertGoods" parameterType="list">
+    INSERT INTO good(
+    <include refid="Base_Column_List"/>)
+    VALUES
+    <foreach collection="list" item="item" close=";" separator=",">
+      (#{id,jdbcType=INTEGER}, #{postId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+      #{orderNum,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{uploadTime,jdbcType=TIMESTAMP},
+      #{overdueTime,jdbcType=TIMESTAMP})
+    </foreach>
+
+  </insert>
 </mapper>

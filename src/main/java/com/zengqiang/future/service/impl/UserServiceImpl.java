@@ -219,7 +219,16 @@ public class UserServiceImpl implements IUserService {
                 UserInfo info=userToUserInfo(user);
                 info.setAccount(userForm.getAccount());
                 info.setCode(perCode);
-                String imgUrl=goodMapper.selectByPrimaryKey(user.getId()).getUrl();
+                String imgUrl=null;
+                //一开始使用默认图片
+                try{
+                    //空
+                    Good good=goodMapper.selectByPrimaryKey(user.getId());
+                    if(good!=null)
+                    imgUrl=good.getUrl();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 info.setImg(imgUrl);
                 return ServerResponse.createBySuccess(info);
             }else{
