@@ -5,7 +5,9 @@ import com.zengqiang.future.common.ServerResponse;
 import com.zengqiang.future.dao.GoodMapper;
 import com.zengqiang.future.dao.ItemMapper;
 import com.zengqiang.future.dao.PostMapper;
+import com.zengqiang.future.form.GoodForm;
 import com.zengqiang.future.form.ItemForm;
+import com.zengqiang.future.form.PostGoodForm;
 import com.zengqiang.future.form.PostItemForm;
 import com.zengqiang.future.info.GoodAndItemInfo;
 import com.zengqiang.future.info.GoodInfo;
@@ -24,6 +26,7 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements IPostService {
 
+    private static Object object=new Object();
     @Autowired
     private PostMapper postMapper;
 
@@ -120,16 +123,11 @@ public class PostServiceImpl implements IPostService {
     @Transactional
     public ServerResponse update(PostItemForm form){
 
-        try{
             Post post=postFormToPost(form);
             int rowCount=postMapper.updateByPrimaryKeySelective(post);
             List<Item> items=postFormToItem(form,post.getId());
             rowCount=itemMapper.updateItems(items);
             return ServerResponse.createBySuccess();
-        }catch (Exception e){
-            e.printStackTrace();
-            return ServerResponse.createByErrorMessage("更新失败");
-        }
 
     }
 
@@ -159,9 +157,9 @@ public class PostServiceImpl implements IPostService {
                 item.setItemDescribe(itemForm.getItemDescribe());
                 item.setNumber(itemForm.getNumber());
                 item.setPostId(postId);
-                item.setId(itemForm.getId());
                 item.setPrice(itemForm.getPrice());
                 item.setTitle(itemForm.getTitle());
+                items.add(item);
             }
         }
         return items;
@@ -175,6 +173,8 @@ public class PostServiceImpl implements IPostService {
         post.setAddrId(form.getAddrId());
         post.setContent(form.getContent());
         post.setId(form.getId());
+        post.setNumPraise(0);
+        post.setNumComment(0);
         return post;
     }
 
@@ -183,8 +183,11 @@ public class PostServiceImpl implements IPostService {
      * @param f true 点赞 false 取消
      * @return
      */
+   // @Transactional
     public ServerResponse praise(int postId,boolean f){
-        final String p=postId+"praise";
+        String p=postId+"praise";
+        //加入常量池
+        p=p.intern();
         try{
             synchronized (p){
                 int praiseNum=postMapper.selectPraiseById(postId);
@@ -205,5 +208,41 @@ public class PostServiceImpl implements IPostService {
             return ServerResponse.createByError();
         }
 
+    }
+
+    @Transactional
+    public ServerResponse createGood(PostGoodForm form){
+        Post post=postGoodFormToPost(form);
+        int rowCount=postMapper.insert(post);
+        List<Good> goods=postFormToGoods(form,post.getId());
+        rowCount=goodMapper.insertGoods(goods);
+        return ServerResponse.createBySuccess();
+    }
+
+    private Post postGoodFormToPost(PostGoodForm form){
+        Post post=new Post();
+        post.setIsEnabledComment(form.getIsEnabledComment());
+        post.setType(post.getType());
+        post.setUserId(form.getUserId());
+        post.setAddrId(form.getAddrId());
+        post.setContent(form.getContent());
+        post.setId(form.getId());
+        post.setNumPraise(0);
+        post.setNumComment(0);
+        return post;
+    }
+
+    private List<Good> postFormToGoods(PostGoodForm form,int postId){
+        List<Good> goods=new ArrayList<>();
+        List<GoodForm> goodForms=form.getGoods();
+        for(int i=0;i<goodForms.size();i++){
+            Good good=new Good();
+            GoodForm goodForm=goodForms.get(i);
+            good.setUrl(goodForm.getUrl());
+            good.setType(goodForm.getType());
+            good.setPostId(postId);
+            goods.add(good);
+        }
+        return goods;
     }
 }
