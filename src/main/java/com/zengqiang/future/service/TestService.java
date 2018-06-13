@@ -8,6 +8,7 @@ import com.zengqiang.future.pojo.Account;
 import com.zengqiang.future.pojo.Item;
 import com.zengqiang.future.pojo.Post;
 import com.zengqiang.future.pojo.User;
+import com.zengqiang.future.service.impl.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,16 +27,15 @@ public class TestService {
     ItemMapper itemMapper;
 
     @Autowired
-    private IPostService postService;
+    private  IPostService postService;
+
+
 
     public void test(){
-
-        for(int i=0;i<100;i++){
-
-            postService.praise(1,false);
-
+        Runnable runnable= () -> postService.praise(1,true);
+        for(int i=0;i<120;i++){
+            new Thread(runnable).start();
         }
-
 
        // itemMapper.deleteByPrimaryKey(18);
         /*List<Item> items=new ArrayList<>();
@@ -51,7 +51,8 @@ public class TestService {
     }
 
     public static void main(String[] args) {
-        User user=new User();
+
+        /*User user=new User();
         user.setPhone("123456");
         user.setQqNumber("12345899");
         String s=JSON.toJSONString(user);
@@ -62,6 +63,6 @@ public class TestService {
         List<Post> list=new ArrayList<>();
         list.add(post);
         list.add(new Post());
-        System.out.println(JSON.toJSON(list)+"\n"+s);
+        System.out.println(JSON.toJSON(list)+"\n"+s);*/
     }
 }

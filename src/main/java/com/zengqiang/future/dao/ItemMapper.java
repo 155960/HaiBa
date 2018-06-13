@@ -24,4 +24,6 @@ public interface ItemMapper {
     int deleteByPostId(Integer postId);
 
     List<Item> selectItemsByPostId(Integer postId);
+
+
 }

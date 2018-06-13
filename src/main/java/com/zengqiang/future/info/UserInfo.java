@@ -1,11 +1,12 @@
 package com.zengqiang.future.info;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.zengqiang.future.pojo.Address;
 
 import java.util.Date;
 import java.util.List;
 
-
+@JsonSerialize(include =  JsonSerialize.Inclusion.NON_NULL)
 public class UserInfo {
     private String account;
     private String nickName;
