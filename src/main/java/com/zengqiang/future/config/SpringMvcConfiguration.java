@@ -1,6 +1,7 @@
 package com.zengqiang.future.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zengqiang.future.common.MyMultipartFileResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -43,8 +44,6 @@ public class SpringMvcConfiguration extends WebMvcConfigurerAdapter{
         converters.add(new FormHttpMessageConverter());
         converters.add(new SourceHttpMessageConverter<>());
 
-
-
         MappingJackson2HttpMessageConverter jsonConverter =
                 new MappingJackson2HttpMessageConverter();
         jsonConverter.setSupportedMediaTypes(Arrays.asList(
@@ -59,7 +58,7 @@ public class SpringMvcConfiguration extends WebMvcConfigurerAdapter{
     public MultipartResolver multipartResolver(){
         //servlet3.0上传
        // return new StandardServletMultipartResolver();
-       return new CommonsMultipartResolver();
+       return new MyMultipartFileResolver();
     }
 
 }

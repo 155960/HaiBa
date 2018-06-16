@@ -193,7 +193,6 @@ public class PostServiceImpl implements IPostService {
                 int praiseNum=postMapper.selectPraiseById(postId);
                 if(f){
                     praiseNum+=1;
-
                 }else{
                     praiseNum-=1;
                 }
