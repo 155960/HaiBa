@@ -12,7 +12,6 @@ public class FileController {
 
     @RequestMapping("upload")
     public ServerResponse upload(@RequestParam("files") MultipartFile[] files,int type){
-
         return null;
     }
 }
