@@ -3,6 +3,9 @@ package com.zengqiang.future.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * 加密
+ */
 public class EncryptUtil {
 
     public static String encryptByMD5(String input){

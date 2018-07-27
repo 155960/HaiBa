@@ -1,6 +1,7 @@
 package com.zengqiang.future.dao;
 
 import com.zengqiang.future.pojo.Post;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,5 +23,12 @@ public interface PostMapper {
     int selectCommentById(Integer id);
 
     int selectPraiseById(Integer postId);
+
+    List<Post> selectHotPosts(Integer addrId);
+
+    List<Post> selectNewestPosts(@Param("addrId") Integer addrId,
+                                 @Param("id") Integer id,
+                                 @Param("begind") Integer begind,
+                                 @Param("size") Integer size);
 
 }

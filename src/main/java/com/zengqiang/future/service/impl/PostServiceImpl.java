@@ -22,11 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.*;
 
 @Service
 public class PostServiceImpl implements IPostService {
 
     private static Object object=new Object();
+    private static final int DEFAULT_SIZE=20;
     @Autowired
     private PostMapper postMapper;
 
@@ -35,6 +37,53 @@ public class PostServiceImpl implements IPostService {
 
     @Autowired
     private GoodMapper goodMapper;
+    @Autowired
+    RedisCacheServiceImpl cacheService;
+
+    /**
+     * 存在上拉与下拉刷新，考虑到id越大时间越早，用id排序
+     * 下拉<id 上拉 >id，id未传时代表全表范围
+     * @param addrId
+     * @param begin
+     * @param size
+     * @return
+     */
+    public ServerResponse getNewestPost(int addrId,int id,int begin,int size){
+        if(id==0){
+            id=Integer.MAX_VALUE;
+        }
+        if(size==0){
+            size=DEFAULT_SIZE;
+        }
+        try{
+            List<Post> posts=postMapper.selectNewestPosts(addrId,id,begin,size);
+            return ServerResponse.createBySuccess(posts);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("查询出错");
+        }
+    }
+    /**
+     *
+     * @param addrId
+     * @return
+     */
+    public ServerResponse getHotPost(int addrId){
+        List<Post> posts=null;
+        try{
+            if((posts=cacheService.getCacheList(Const.CachePrefix.HOTPOST+addrId))!=null){
+            }else{
+                posts=postMapper.selectHotPosts(addrId);
+                cacheService.setCacheList(Const.CachePrefix.HOTPOST,posts);
+            }
+            return ServerResponse.createBySuccess(posts);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("查询出错");
+        }
+
+
+    }
 
     public ServerResponse detail(int postId,int type){
         try{
