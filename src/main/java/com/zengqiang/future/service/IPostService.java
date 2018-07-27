@@ -11,4 +11,6 @@ public interface IPostService {
     ServerResponse detail(int postId,int type);
     ServerResponse praise(int postId,boolean f);
     ServerResponse createGood(PostGoodForm form);
+    ServerResponse getHotPost(int addrId);
+    ServerResponse getNewestPost(int addrId,int id,int begin,int size);
 }

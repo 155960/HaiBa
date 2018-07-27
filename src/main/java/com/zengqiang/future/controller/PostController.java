@@ -67,4 +67,16 @@ public class PostController {
         return postService.praise(postId,false);
     }
 
+    //根据地址ID查询当地热点数据
+    @RequestMapping(value = "/host_post",method = RequestMethod.POST)
+    public ServerResponse hotPost(int addrId){
+        return postService.getHotPost(addrId);
+    }
+
+    //最新数据
+    @RequestMapping(value = "/newest_post",method =RequestMethod.POST )
+    public ServerResponse newestPost(int addrId,int id,int begin,int size){
+        return postService.getNewestPost(addrId,id,begin,size);
+    }
+
 }

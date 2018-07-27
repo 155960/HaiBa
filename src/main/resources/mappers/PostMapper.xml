@@ -169,4 +169,24 @@
     SELECT num_praise from post
     WHERE id=#{id}
   </select>
+
+  <select id="selectHotPosts" parameterType="int" resultType="com.zengqiang.future.pojo.Post">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM post
+    WHERE addr_id=#{id} GROUP by create_time
+  </select>
+
+    <!--子查询方法，效率更高，但需另写一个查询没有id的
+    SELECT * from post where id
+	>
+	(SELECT id from post where addr_id=1 ORDER BY id desc limit 1,1)
+	limit 3-->
+  <select id="selectNewestPosts" parameterType="map" resultType="com.zengqiang.future.pojo.Post">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM post
+    WHERE addr_id=#{addrId} and id &lt;#{id}  order by id DESC
+    limit #{begind},#{size}
+  </select>
 </mapper>
