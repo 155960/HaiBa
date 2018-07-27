@@ -129,10 +129,10 @@ public class RootContextConfiguration {
         <property name="testOnBorrow" value="${redis.testOnBorrow}" />
     </bean>*/
     @Bean
-    public JedisPoolConfig jedisPoolConfig(@Value("redis.maxIdle")int maxIdle,
-                                           @Value("redis.minEvictableIdleTimeMillis")int minEvi,
-                                           @Value("redis.numTestsPerEvictionRun")int numTest,
-                                           @Value("redis.timeBetweenEvictionRunsMillis")int timeBet){
+    public JedisPoolConfig jedisPoolConfig(@Value("${redis.maxIdle}")int maxIdle,
+                                           @Value("${redis.minEvictableIdleTimeMillis}")int minEvi,
+                                           @Value("${redis.numTestsPerEvictionRun}")int numTest,
+                                           @Value("${redis.timeBetweenEvictionRunsMillis}")int timeBet){
         JedisPoolConfig config=new JedisPoolConfig();
         config.setMaxIdle(maxIdle);
         config.setMinEvictableIdleTimeMillis(minEvi);
@@ -142,10 +142,10 @@ public class RootContextConfiguration {
     }
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(JedisPoolConfig config,
-                                                         @Value("redis.hostName")String hostName,
-                                                         @Value("redis.port")int port,
-                                                         @Value("redis.timeout")int timeout,
-                                                         @Value("redis.usePool")boolean usePool){
+                                                         @Value("${redis.hostName}")String hostName,
+                                                         @Value("${redis.port}")int port,
+                                                         @Value("${redis.timeout}")int timeout,
+                                                         @Value("${redis.usePool}")boolean usePool){
         JedisConnectionFactory factory=new JedisConnectionFactory();
         factory.setHostName(hostName);
         factory.setPort(port);
