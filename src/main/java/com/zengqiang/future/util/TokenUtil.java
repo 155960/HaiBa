@@ -21,7 +21,7 @@ public class TokenUtil {
     private static Logger log = LoggerFactory.getLogger(TokenUtil.class);
 
     /**
-     * 创建jwt
+     * 创建jwt,測試
      * @param id
      * @param subject
      * @param ttlMillis 过期的时间长度
@@ -101,6 +101,15 @@ public class TokenUtil {
         }
         return null;
     }
+
+    public static String getAccount(String token){
+        Claims claims=checkToken(token);
+        if (claims!=null){
+            return (String)claims.get("account");
+        }
+        return null;
+    }
+
 
     public static Claims checkToken(String token){
 

@@ -56,8 +56,8 @@ public class UserServiceImpl implements IUserService {
     private AddressMapper addressMapper;
 
     @Transactional
-    public ServerResponse uploadHeadImg(MultipartFile file,Integer userId){
-        String url=fileService.upload(file, Const.Good.IMG);
+    public ServerResponse uploadHeadImg(MultipartFile file,Integer userId,String account){
+        String url=fileService.upload(file,account);
         if(StringUtils.isEmpty(url)){
             return ServerResponse.createByErrorMessage("上传失败");
         }else{
@@ -66,6 +66,7 @@ public class UserServiceImpl implements IUserService {
             good.setType(Const.Good.IMG);
             goodMapper.insert(good);
             User user=new User();
+            user.setId(userId);
             user.setImageId(good.getId());
             int rowCount=userMapper.updateByPrimaryKeySelective(user);
             if(rowCount>0){

@@ -4,18 +4,15 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public class FTPUtil {
-    private static final Logger logger= LoggerFactory.getLogger(FTPUtil.class);
-    private static String ftpIp=PropertiesUtil.getProperty("ftp.server.ip");
-    private static String ftpUser=PropertiesUtil.getProperty("ftp.user");
-    private static String ftpPass=PropertiesUtil.getProperty("ftp.pass");
-    private static String rootDir=PropertiesUtil.getProperty("ftp.root.dir");
+    private static final Logger logger = LoggerFactory.getLogger(FTPUtil.class);
+    private static String ftpIp = PropertiesUtil.getProperty("ftp.server.ip");
+    private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
+    private static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
+    private static String rootDir = PropertiesUtil.getProperty("ftp.root.dir");
 
     private FTPClient client;
     private String user;
@@ -23,15 +20,15 @@ public class FTPUtil {
     private String ip;
     private int port;
 
-    public FTPUtil(String ip, int port, String user, String pwd){
-        this.ip=ip;
-        this.port=port;
-        this.user=user;
-        this.pwd=pwd;
-        client=new FTPClient();
+    public FTPUtil(String ip, int port, String user, String pwd) {
+        this.ip = ip;
+        this.port = port;
+        this.user = user;
+        this.pwd = pwd;
+        client = new FTPClient();
     }
 
-   //创建文件夹是遇到一个坑，linux下不能创建多级目录，只能一级一级创建
+    //创建文件夹是遇到一个坑，linux下不能创建多级目录，只能一级一级创建
     private void createDir(String path) throws IOException {
         client.changeWorkingDirectory(rootDir);
         //默认已存在文件路径
@@ -48,21 +45,21 @@ public class FTPUtil {
 
     }
 
-    public static boolean uploadFile(List<File> fileList,String remotePath) throws IOException {
-       FTPUtil ftpUtil=new FTPUtil(ftpIp,21,ftpUser,ftpPass);
-       //logger.info("开始连接服务器");
-       boolean result=ftpUtil.uploadFile(remotePath,fileList);
-       return result;
+    public static boolean[] uploadFile(List<File> fileList, String remotePath) {
+        FTPUtil ftpUtil = new FTPUtil(ftpIp, 21, ftpUser, ftpPass);
+        //logger.info("开始连接服务器");
+        boolean[] result = ftpUtil.uploadFile(remotePath, fileList);
+        return result;
     }
 
-    public static boolean downloadFile(List<File> fileList){
+    public static boolean downloadFile(List<File> fileList) {
         return false;
     }
 
-    private boolean downloadFile(String path,String remotePath,List<File> fileList) throws IOException {
-        boolean download=true;
-        FileOutputStream fos=null;
-        if(connectServer(this.ip,this.port,this.user,this.pwd)){
+    private boolean downloadFile(String path, String remotePath, List<File> fileList) throws IOException {
+        boolean download = true;
+        FileOutputStream fos = null;
+        if (connectServer(this.ip, this.port, this.user, this.pwd)) {
             client.changeWorkingDirectory("/home/ftp/img/");
             client.setControlEncoding("UTF-8");
 
@@ -71,50 +68,70 @@ public class FTPUtil {
     }
 
     /**
-     *
-     * @param remotePath  linux下文件存储路径如 /home/ftp/img
-     * @param fileList  要存的文件集合
+     * @param remotePath linux下文件存储路径如 /home/ftp/img
+     * @param fileList   要存的文件集合
      * @return
      * @throws IOException
      */
-    private  boolean uploadFile(String remotePath,List<File> fileList) throws IOException {
-        boolean upload=true;
-        FileInputStream fis=null;
-        if(connectServer(this.ip,this.port,this.user,this.pwd)){
-            try {
+    private boolean[] uploadFile(String remotePath, List<File> fileList) {
+        /*upload每一位機載是否上傳成功，最後一位記錄上傳是否失敗*/
+        boolean[] upload = new boolean[fileList.size() + 1];
+        FileInputStream fis = null;
+        try {
+            if (connectServer(this.ip, this.port, this.user, this.pwd)) {
                 //创建路径
-                createDir(remotePath);
-                //client.changeWorkingDirectory(remotePath);
-                client.setBufferSize(1024);
-                client.setDataTimeout(3000);
-                client.setConnectTimeout(3000);
-                client.setControlEncoding("UTF-8");
-                client.setFileType(FTPClient.BINARY_FILE_TYPE);
-                //少了这句将无法创建文件
-                client.enterLocalPassiveMode();
-                for(File fileItem:fileList){
-                    fis=new FileInputStream(fileItem);
-                    client.storeFile(fileItem.getName(),fis);
+                try {
+                    createDir(remotePath);
+                    //client.changeWorkingDirectory(remotePath);
+                    client.setBufferSize(1024);
+                    client.setDataTimeout(3000);
+                    client.setConnectTimeout(3000);
+                    client.setControlEncoding("UTF-8");
+                    client.setFileType(FTPClient.BINARY_FILE_TYPE);
+                    //少了这句将无法创建文件
+                    client.enterLocalPassiveMode();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    upload[fileList.size()] = true;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                upload=false;
-            }finally {
+
+                for (int i=0;i<fileList.size();i++) {
+                    File fileItem=fileList.get(i);
+                    try {
+                        if (fileItem != null) {
+                            fis = new FileInputStream(fileItem);
+                            client.storeFile(fileItem.getName(), fis);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.error(fileItem.getName()+"上傳失敗");
+                        upload[i] = true;
+                    }
+                }
+            }
+        } finally {
+            try {
                 fis.close();
                 client.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         }
         return upload;
     }
 
+
+
     //连接ftp服务器
-    private boolean connectServer(String ip,int port ,String user,String pwd){
-        boolean isSuccess=false;
+    private boolean connectServer(String ip, int port, String user, String pwd) {
+        boolean isSuccess = false;
         try {
             //默认端口21
             client.connect(ip);
-           // PrintUtil.print(client.getReply()+"**");
-            isSuccess=client.login(user,pwd);
+            // PrintUtil.print(client.getReply()+"**");
+            isSuccess = client.login(user, pwd);
         } catch (IOException e) {
             e.printStackTrace();
         }

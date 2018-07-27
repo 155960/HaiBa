@@ -84,7 +84,8 @@ public class UserController {
     public ServerResponse uploadHeadPicture(MultipartFile file,HttpServletRequest request){
         String token=request.getHeader("Authorization");
         Integer userId=TokenUtil.getUserId(token);
-        return userService.uploadHeadImg(file,userId);
+        String account=TokenUtil.getAccount(token);
+        return userService.uploadHeadImg(file,userId,account);
     }
 
     @RequestMapping("/add_addr")

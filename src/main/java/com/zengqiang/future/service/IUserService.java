@@ -11,5 +11,5 @@ public interface IUserService {
     ServerResponse logout(String account,String token);
     String checkToken(String token) throws Exception;
     ServerResponse findMyPost(Integer userId);
-    ServerResponse uploadHeadImg(MultipartFile file, Integer userId);
+    ServerResponse uploadHeadImg(MultipartFile file, Integer userId,String account);
 }

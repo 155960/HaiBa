@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 
     @RequestMapping("upload")
-    public ServerResponse upload(@RequestParam("files") MultipartFile[] files,int type){
+    public ServerResponse upload(@RequestParam("files") MultipartFile file,int type){
+
         return null;
+
     }
 }

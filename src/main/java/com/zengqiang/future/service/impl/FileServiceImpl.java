@@ -20,43 +20,56 @@ import java.util.Calendar;
 @Service
 public class FileServiceImpl implements IFileService {
 
+
+    /**
+     *多個文件上傳
+     * @param files
+     * @param account
+     * @return
+     */
+    public String[] upload(MultipartFile[] files,String account){
+        File[] a=new File[files.length];
+        String[] https=new String[files.length];//訪問路徑
+        String remotePath= PropertiesUtil.getProperty("ftp.home");
+        String httpPath= PropertiesUtil.getProperty("http.path");
+        httpPath+=remotePath;
+        remotePath+="/"+account+"/";
+        for(int i=0;i<files.length;i++){
+            String fileName=files[i].getOriginalFilename();
+            a[i]=new File(remotePath,fileName);
+            https[i]=httpPath+fileName;
+            try {
+                files[i].transferTo(a[i]);
+            } catch (IOException e) {
+                e.printStackTrace();
+                https[i]=null;
+                a[i]=null;
+            }
+
+        }
+
+        boolean[] result=FTPUtil.uploadFile(Lists.newArrayList(a),remotePath);
+        if(result[result.length-1]){
+            return null;
+        }
+        for(int i=0;i<result.length-2;i++){
+            if(result[i]){
+                https[i]=null;
+            }
+        }
+        return https;
+    }
     /**
      *
      * @param file
      * @return  上传的静态资源访问路径
      */
-    public String upload(MultipartFile file,int type){
-        String path="";
-        String fileName=file.getOriginalFilename();
-        String fileExtensionName=fileName.substring(fileName.lastIndexOf(".")+1);
-        Calendar calendar=Calendar.getInstance();
-        int month=calendar.get(Calendar.MONTH);
-        int day=calendar.get(Calendar.DAY_OF_MONTH);
-        String remotePath= PropertiesUtil.getProperty("ftp.home");
-        remotePath+="/"+path+"/"+month+"/"+day+"/";
-
-        //加上前缀方便查找
-        String uploadFileName=filePath(type)+System.currentTimeMillis()+"."+fileExtensionName;
-        File dir=new File(path);
-        if(!dir.exists()){
-            dir.setWritable(true);
-            dir.mkdirs();
-        }
-        File targetFile=new File(path,uploadFileName);
-        try {
-            file.transferTo(targetFile);
-            FTPUtil.uploadFile(Lists.newArrayList(targetFile),remotePath);
-            //访问路径
-            String httpPath= PropertiesUtil.getProperty("http.path");
-            httpPath+=remotePath;
-            httpPath+=uploadFileName;
-            return httpPath;
-            //targetFile.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String upload(MultipartFile file,String account){
+        String[] result= upload(new MultipartFile[]{file},account);
+        if(result==null){
             return null;
         }
-
+        return result[0];
     }
 
     /**
