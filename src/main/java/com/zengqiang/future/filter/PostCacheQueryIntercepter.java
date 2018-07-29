@@ -11,7 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * 取缓存没有时存
  */
-public class PostCacheIntercepter implements MethodInterceptor{
+public class PostCacheQueryIntercepter implements MethodInterceptor{
 
 
 
@@ -21,10 +21,34 @@ public class PostCacheIntercepter implements MethodInterceptor{
         String key=arguments[0].toString();
         int id=Integer.parseInt(key);
         RequestQueue queue=RequestQueue.getInstance();
-        Object o= RedisCacheUtil.getCacheObject(key);
         boolean flag=queue.getFlag(key);
+        int position=id%RequestQueue.QUEUES;
         Notice notice=new Notice();
-        //队列中有更新操作，或者该ID目前并没有加入缓存
+        Object o;
+        //前面有一个更新操作，等待其完成
+        if(flag){
+            queue.clearFlag(key);//后续更新操作不放入队列
+            queue.getQueue(position).offer(notice);
+            notice.process();//阻塞
+            queue.getQueue(position).take();//自身出队
+            queue.revive(position);//唤醒下一个更新操作
+            o=invocation.proceed();
+            RedisCacheUtil.setCacheObject(key,o);
+            return o;
+        }
+        long startTime=System.currentTimeMillis();
+        long currentTime=startTime;
+        //200ms的超时时间
+        while (currentTime-startTime<200){
+            o=RedisCacheUtil.getCacheObject(key);
+            if(o!=null){
+                return o;
+            }
+        }
+        //此时直接读数据库
+        o=invocation.proceed();
+        return o;
+        /*//队列中有更新操作，或者该ID目前并没有加入缓存
         if(flag||o==null){
             //队列中有更新操作加入队列
             if(flag){
@@ -45,11 +69,11 @@ public class PostCacheIntercepter implements MethodInterceptor{
             }else{
                 queue.reviveAll(id%RequestQueue.QUEUES);
             }
-        }
-        /*System.out.println("*******");
+        }*/
+        /*System.out.println("查询*******");
         Object o=invocation.proceed();
-        System.out.println("方法结束");*/
-        return o;
+        System.out.println("查询方法结束");*/
+
     }
 
    /* @Override

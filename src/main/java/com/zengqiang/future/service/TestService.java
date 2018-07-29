@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("testService")
 public class TestService {
 
     @Autowired
@@ -29,7 +29,13 @@ public class TestService {
     @Autowired
     private  IPostService postService;
 
+    public void select(int a){
+        System.out.println("#########"+a);
+    }
 
+    public void update(int a){
+        System.out.println("&&&&&&&&&&&"+a);
+    }
 
     public void test(){
         Runnable runnable= () -> postService.praise(1,true);
@@ -49,6 +55,7 @@ public class TestService {
         }
         itemMapper.insetItems(items);*/
     }
+
 
     public static void main(String[] args) {
 

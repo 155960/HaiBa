@@ -7,10 +7,7 @@ import com.zengqiang.future.service.IPostService;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -75,7 +72,10 @@ public class PostController {
 
     //最新数据
     @RequestMapping(value = "/newest_post",method =RequestMethod.POST )
-    public ServerResponse newestPost(int addrId,int id,int begin,int size){
+    public ServerResponse newestPost(int addrId,
+                                     @RequestParam(value = "id",required = false)int id,
+                                     int begin,
+                                     @RequestParam(value = "size",required = false) int size){
         return postService.getNewestPost(addrId,id,begin,size);
     }
 

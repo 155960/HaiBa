@@ -37,8 +37,6 @@ public class PostServiceImpl implements IPostService {
 
     @Autowired
     private GoodMapper goodMapper;
-    @Autowired
-    RedisCacheServiceImpl cacheService;
 
     /**
      * 存在上拉与下拉刷新，考虑到id越大时间越早，用id排序
@@ -57,6 +55,7 @@ public class PostServiceImpl implements IPostService {
         }
         try{
             List<Post> posts=postMapper.selectNewestPosts(addrId,id,begin,size);
+            System.out.println(posts.size()+"******&&&&&");
             return ServerResponse.createBySuccess(posts);
         }catch (Exception e){
             e.printStackTrace();
@@ -71,11 +70,12 @@ public class PostServiceImpl implements IPostService {
     public ServerResponse getHotPost(int addrId){
         List<Post> posts=null;
         try{
-            if((posts=cacheService.getCacheList(Const.CachePrefix.HOTPOST+addrId))!=null){
+            posts=postMapper.selectHotPosts(addrId);
+          /*  if((posts=cacheService.getCacheList(Const.CachePrefix.HOTPOST+addrId))!=null){
             }else{
-                posts=postMapper.selectHotPosts(addrId);
+
                 cacheService.setCacheList(Const.CachePrefix.HOTPOST,posts);
-            }
+            }*/
             return ServerResponse.createBySuccess(posts);
         }catch (Exception e){
             e.printStackTrace();

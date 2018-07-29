@@ -2,6 +2,7 @@ package texst;
 
 import com.alibaba.fastjson.JSON;
 import com.zengqiang.future.common.Const;
+import com.zengqiang.future.common.Notice;
 import com.zengqiang.future.form.ItemForm;
 import com.zengqiang.future.form.PostItemForm;
 import com.zengqiang.future.pojo.Item;
@@ -20,7 +21,39 @@ import java.util.Properties;
 
 public class Test {
     public static void main(String[] args) {
-        createPostItemForm();
+       t();
+    }
+
+    public static void t(){
+       Notice notice= new Notice();
+        Thread thread1=new Thread(new Runnable() {
+            @Override
+            public void run() {
+               notice.process();
+                System.out.println("******");
+            }
+        });
+        Thread thread2=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("$$$$$");
+
+                try {
+                    Thread.sleep(4500);
+                    System.out.println(")))))))))))");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                notice.clearFlag();
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+
+    public static void quene(){
+
     }
 
     public static void com(){

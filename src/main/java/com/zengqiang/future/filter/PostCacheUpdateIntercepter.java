@@ -10,7 +10,7 @@ import org.aopalliance.intercept.MethodInvocation;
 /**
  * 修改删除等操作时缓存操作
  */
-public class PostCacheCreateIntercepter implements MethodInterceptor{
+public class PostCacheUpdateIntercepter implements MethodInterceptor{
 
  //   public static
 
@@ -26,24 +26,24 @@ public class PostCacheCreateIntercepter implements MethodInterceptor{
         }
         String key=id+"";
         RequestQueue queue=RequestQueue.getInstance();
-        //队列中有更新操作或者缓存存在
-        boolean flag=queue.getFlag(key);
+        int position=id%RequestQueue.QUEUES;
         Notice notice=new Notice();
-        if(flag||RedisCacheUtil.getCacheObject(key)!=null){
-            queue.getQueue(id%RequestQueue.QUEUES).offer(notice);
-            queue.setFlag(key);
-            //如果当前队列中有相同id任务，等待，超时500ms后自动执行
-            if(flag){
-                notice.process();
-            }
-            RedisCacheUtil.removeCacheObject(key);
-            Object o=invocation.proceed();
-            queue.clearFlag(key);
-            queue.getQueue(id%RequestQueue.QUEUES).take();
-            queue.revive(id%RequestQueue.QUEUES);
-            return o;
-        }else{
-            return invocation.proceed();
+        queue.getQueue(id%RequestQueue.QUEUES).offer(notice);
+        queue.setFlag(key);
+        //不是第一个更新请求
+        if(queue.getQueue(position).size()>1){
+            //阻塞，等待被执行
+            notice.process();
         }
+        RedisCacheUtil.removeCacheObject(key);
+        Object o=invocation.proceed();
+        queue.clearFlag(key);
+        queue.getQueue(id%RequestQueue.QUEUES).take();
+        //唤醒下一个
+        queue.revive(id%RequestQueue.QUEUES);
+       /* System.out.println("更新*******");
+        Object o=invocation.proceed();
+        System.out.println("更新方法结束");*/
+        return o;
     }
 }

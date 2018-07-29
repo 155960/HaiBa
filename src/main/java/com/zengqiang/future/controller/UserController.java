@@ -7,6 +7,7 @@ import com.zengqiang.future.pojo.Post;
 import com.zengqiang.future.pojo.User;
 import com.zengqiang.future.service.IFileService;
 import com.zengqiang.future.service.IUserService;
+import com.zengqiang.future.util.RedisCacheUtil;
 import com.zengqiang.future.util.TokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ public class UserController {
     @RequestMapping(value = "/register" ,method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse register(UserForm userForm){
+
         return userService.register(userForm);
     }
 
