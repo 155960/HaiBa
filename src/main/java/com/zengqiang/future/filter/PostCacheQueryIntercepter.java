@@ -6,14 +6,11 @@ import com.zengqiang.future.common.RequestQueue;
 import com.zengqiang.future.util.RedisCacheUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 取缓存没有时存
  */
 public class PostCacheQueryIntercepter implements MethodInterceptor{
-
-
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -29,24 +26,39 @@ public class PostCacheQueryIntercepter implements MethodInterceptor{
         if(flag){
             queue.clearFlag(key);//后续更新操作不放入队列
             queue.getQueue(position).offer(notice);
+            System.out.println("查询入队"+queue.getQueue(position).size());
             notice.process();//阻塞
-            queue.getQueue(position).take();//自身出队
+            queue.getQueue(position).poll();//自身出队
+            System.out.println("查询出队"+queue.getQueue(position).size()+1);
             queue.revive(position);//唤醒下一个更新操作
+
             o=invocation.proceed();
             RedisCacheUtil.setCacheObject(key,o);
             return o;
         }
-        long startTime=System.currentTimeMillis();
-        long currentTime=startTime;
-        //200ms的超时时间
-        while (currentTime-startTime<200){
-            o=RedisCacheUtil.getCacheObject(key);
-            if(o!=null){
-                return o;
+        //当队列有查询操作时循环等待200ms，不断尝试取缓存
+        if(queue.getQueue(position).size()>0){
+            long startTime=System.currentTimeMillis();
+            long currentTime=startTime;
+            //200ms的超时时间
+            while (currentTime-startTime<200){
+                o=RedisCacheUtil.getCacheObject(key);
+                if(o!=null){
+                    return o;
+                }
+            }
+            o=invocation.proceed();
+        }else{
+            if(RedisCacheUtil.hasCache(key)){
+                System.out.println("有cache");
+                o=RedisCacheUtil.getCacheObject(key);
+            }else{
+                System.out.println("无cache");
+                o=invocation.proceed();
+                RedisCacheUtil.setCacheObject(key,o);
             }
         }
         //此时直接读数据库
-        o=invocation.proceed();
         return o;
         /*//队列中有更新操作，或者该ID目前并没有加入缓存
         if(flag||o==null){

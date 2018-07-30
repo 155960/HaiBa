@@ -27,9 +27,7 @@ public class RequestQueue {
     }
 
     public synchronized void addQueue(int i){
-        if(threadQueue.length<QUEUES){
-            threadQueue[i]=new ArrayBlockingQueue<Notice>(10);
-        }
+        threadQueue[i]=new ArrayBlockingQueue<Notice>(10);
     }
 
     public ArrayBlockingQueue getQueue(int i){

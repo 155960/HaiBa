@@ -55,7 +55,6 @@ public class PostServiceImpl implements IPostService {
         }
         try{
             List<Post> posts=postMapper.selectNewestPosts(addrId,id,begin,size);
-            System.out.println(posts.size()+"******&&&&&");
             return ServerResponse.createBySuccess(posts);
         }catch (Exception e){
             e.printStackTrace();

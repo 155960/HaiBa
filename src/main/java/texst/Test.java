@@ -20,8 +20,21 @@ import java.util.List;
 import java.util.Properties;
 
 public class Test {
+    private static Object object=new Object();
     public static void main(String[] args) {
-       t();
+       t2();
+    }
+
+    public static void t2(){
+        synchronized (object){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("****");
+        }
+        System.out.println("&&&&");
     }
 
     public static void t(){

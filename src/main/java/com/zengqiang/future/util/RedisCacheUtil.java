@@ -22,6 +22,10 @@ public class RedisCacheUtil {
        redisTemplate.delete(key);
    }
 
+   public static boolean hasCache(String key){
+        return redisTemplate.hasKey(key);
+   }
+
     /**
      * 缓存基本的对象，Integer、String、实体类等
      * @param key    缓存的键值
