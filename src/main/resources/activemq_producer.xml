@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--配置多个-->
+   <!-- <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="order" value="2"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:datasource.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="utf-8"/>
+    </bean>-->
+
+    <!--<context:property-placeholder location="activemq.properties" file-encoding="UTF-8" />
+-->
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+               <property name="brokerURL">
+                   <value>${activemq.url}</value>
+               </property>
+                <property name="useAsyncSend" value="true"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!--默认只缓存session-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="pooledConnectionFactory"/>
+        <property name="sessionCacheSize" value="1"/>
+    </bean>
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="messageConverter">
+            <bean class="org.springframework.jms.support.converter.SimpleMessageConverter"/>
+        </property>
+        <!--持久化-->
+        <property name="deliveryMode" value="2"/>
+        <!--订阅模式-->
+        <property name="pubSubDomain" value="true"/>
+    </bean>
+
+    <!--点到点式-->
+    <bean id="activeMQQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="queue"/>
+    </bean>
+
+    <!--系统-->
+    <bean id="systemTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg index="0" value="systemTopic"/>
+    </bean>
+    <!--推送消息-->
+    <bean id="pushTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg index="0" value="pushTopic"/>
+    </bean>
+
+                                            <!--接收配置-->
+
+
+
+    <bean id="pushMessageListener" class="com.zengqiang.future.common.PushMessgeListener"/>
+
+
+
+    <bean id="pushMessageContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="pushTopic"/>
+        <property name="messageListener" ref="pushMessageListener"/>
+    </bean>
+
+    <context:component-scan base-package="com.zengqiang.future.util"/>
+</beans>

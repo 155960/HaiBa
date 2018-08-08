@@ -23,12 +23,18 @@ public class PostController {
         return postService.createPostItem(itemForm);
     }
 
+    /**
+     *
+     * @param goodForm
+     * @return
+     */
     @RequestMapping(value = "/create_good",method = RequestMethod.POST)
     public ServerResponse createGood(@RequestBody PostGoodForm goodForm){
         try{
             return postService.createGood(goodForm);
         }catch (Exception e){
             e.printStackTrace();
+
             return ServerResponse.createByError();
         }
     }

@@ -6,7 +6,7 @@ public class Notice {
 
     public void process(){
         while (flag){
-            System.out.println("**"+Thread.currentThread().getName()+"阻塞中");
+           // System.out.println("**"+Thread.currentThread().getName()+"阻塞中");
         }
 
     }

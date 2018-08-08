@@ -37,10 +37,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@ImportResource(value = "classpath:activemq_producer.xml")
 @EnableTransactionManagement(
         mode = AdviceMode.PROXY, proxyTargetClass = false
 )
-@PropertySource(value = {"classpath:datasource.properties","classpath:redis.properties"})
+@PropertySource(value = {"classpath:datasource.properties","classpath:redis.properties","classpath:activemq.properties"})
 @ComponentScan(
         basePackages = {"com.zengqiang.future.service","com.zengqiang.future.util"}
 )

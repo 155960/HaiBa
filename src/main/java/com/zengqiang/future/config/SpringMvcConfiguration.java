@@ -51,12 +51,12 @@ public class SpringMvcConfiguration extends WebMvcConfigurerAdapter{
         converters.add(jsonConverter);
     }
 
-    @Bean
+  /*  @Bean
     public MultipartResolver multipartResolver(){
         //servlet3.0上传
        // return new StandardServletMultipartResolver();
        return new MyMultipartFileResolver();
-    }
+    }*/
 
    /* @Bean
     public PostCacheQueryIntercepter cacheIntercepter(){

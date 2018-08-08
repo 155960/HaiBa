@@ -5,6 +5,7 @@ import com.zengqiang.future.common.Const;
 import com.zengqiang.future.common.Notice;
 import com.zengqiang.future.form.ItemForm;
 import com.zengqiang.future.form.PostItemForm;
+import com.zengqiang.future.form.SystemForm;
 import com.zengqiang.future.pojo.Item;
 import com.zengqiang.future.service.IPostService;
 import com.zengqiang.future.service.impl.PostServiceImpl;
@@ -22,7 +23,7 @@ import java.util.Properties;
 public class Test {
     private static Object object=new Object();
     public static void main(String[] args) {
-       t2();
+       createPostItemForm();
     }
 
     public static void t2(){
@@ -92,7 +93,7 @@ public class Test {
     }
 
     private static void createPostItemForm(){
-        PostItemForm form=new PostItemForm();
+       /* PostItemForm form=new PostItemForm();
         form.setContent("测试");
         form.setIsEnabledComment(0);
         form.setType((int)Const.Post.ITEM);
@@ -108,7 +109,9 @@ public class Test {
             itemForm.setId(1);
             items.add(itemForm);
         }
-        form.setItems(items);
-        System.out.println(JSON.toJSONString(form));
+        form.setItems(items);*/
+        SystemForm systemForm=new SystemForm();
+        systemForm.setMessage("1234567");
+        System.out.println(JSON.toJSONString(systemForm));
     }
 }

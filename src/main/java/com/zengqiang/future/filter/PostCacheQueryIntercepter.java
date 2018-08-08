@@ -8,7 +8,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 /**
- * 取缓存没有时存
+ *
  */
 public class PostCacheQueryIntercepter implements MethodInterceptor{
 

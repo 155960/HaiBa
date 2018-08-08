@@ -30,16 +30,26 @@ public class FileServiceImpl implements IFileService {
     public String[] upload(MultipartFile[] files,String account){
         File[] a=new File[files.length];
         String[] https=new String[files.length];//訪問路徑
+
         String remotePath= PropertiesUtil.getProperty("ftp.home");
+
         String httpPath= PropertiesUtil.getProperty("http.path");
         httpPath+=remotePath;
+
         remotePath+="/"+account+"/";
         for(int i=0;i<files.length;i++){
             String fileName=files[i].getOriginalFilename();
+            File file=new File(remotePath);
+            if(!file.exists()){
+                file.setWritable(true);
+                file.mkdirs();
+            }
             a[i]=new File(remotePath,fileName);
+
             https[i]=httpPath+fileName;
             try {
                 files[i].transferTo(a[i]);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 https[i]=null;
@@ -49,6 +59,7 @@ public class FileServiceImpl implements IFileService {
         }
 
         boolean[] result=FTPUtil.uploadFile(Lists.newArrayList(a),remotePath);
+
         if(result[result.length-1]){
             return null;
         }

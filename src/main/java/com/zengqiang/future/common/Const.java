@@ -24,4 +24,8 @@ public class Const {
     public interface CachePrefix{
         String HOTPOST="hotpost";//地区热点数据
     }
+
+    public interface HTTP{
+        String PREFIX="http://111.231.203.86/resources";
+    }
 }
