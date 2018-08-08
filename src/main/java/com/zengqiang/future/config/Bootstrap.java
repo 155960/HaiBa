@@ -27,5 +27,9 @@ public class Bootstrap implements WebApplicationInitializer {
                 "mvcservlet",new DispatcherServlet(springMvcContext));
         dynamic.setLoadOnStartup(1);
         dynamic.addMapping("/");
+
+        /*AnnotationConfigWebApplicationContext redisContext=
+                new AnnotationConfigWebApplicationContext();
+        redisContext.register(RedisConfiguration.class);*/
     }
 }

@@ -187,6 +187,6 @@
     <include refid="Base_Column_List"/>
     FROM post
     WHERE addr_id=#{addrId} and id &lt;#{id}  order by id DESC
-    limit #{begind},#{size}
+    limit #{begin},#{size}
   </select>
 </mapper>

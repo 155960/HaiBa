@@ -15,9 +15,9 @@ public class MyRedisCacheManager extends RedisCacheManager {
         super(redisOperations, cacheNames);
     }
 
-    public MyRedisCacheManager(RedisOperations redisOperations, Collection<String> cacheNames, boolean cacheNullValues) {
+   /* public MyRedisCacheManager(RedisOperations redisOperations, Collection<String> cacheNames, boolean cacheNullValues) {
         super(redisOperations, cacheNames, cacheNullValues);
-    }
+    }*/
 
     //通过前缀识别一类缓存信息
     @Override

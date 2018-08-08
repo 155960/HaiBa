@@ -9,10 +9,9 @@ public class T {
     private static volatile boolean flag = false;
 
     public static void main(String[] args) {
-        Thread waiter = new Thread(new waiter());
-        waiter.start();
-        Thread signaler = new Thread(new signaler());
-        signaler.start();
+        String s="12345.90";
+        int a=s.lastIndexOf(".");
+        System.out.println(a+"");
     }
 
     static class waiter implements Runnable {

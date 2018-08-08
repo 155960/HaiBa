@@ -3,21 +3,24 @@ package com.zengqiang.future.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInterceptor;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zengqiang.future.common.Const;
 import com.zengqiang.future.common.MyRedisCacheManager;
+import com.zengqiang.future.filter.PostCacheQueryIntercepter;
+import com.zengqiang.future.filter.PostCacheUpdateIntercepter;
 import com.zengqiang.future.util.PropertiesUtil;
 import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
+import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
@@ -32,16 +35,17 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Configuration
+@ImportResource(value = "classpath:activemq_producer.xml")
 @EnableTransactionManagement(
         mode = AdviceMode.PROXY, proxyTargetClass = false
 )
-@PropertySource(value = {"classpath:datasource.properties","classpath:redis.properties"})
+@PropertySource(value = {"classpath:datasource.properties","classpath:redis.properties","classpath:activemq.properties"})
 @ComponentScan(
-        basePackages = "com.zengqiang.future.service"
+        basePackages = {"com.zengqiang.future.service","com.zengqiang.future.util"}
 )
+
 public class RootContextConfiguration {
 
     @Bean
@@ -79,7 +83,7 @@ public class RootContextConfiguration {
     }
 
     @Bean
-    public SqlSessionFactoryBean factoryBean(DataSource dataSource,Interceptor interceptor) throws IOException {
+    public SqlSessionFactoryBean factoryBean(DataSource dataSource,PageInterceptor interceptor) throws IOException {
         SqlSessionFactoryBean factoryBean=new SqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
         factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*.xml"));
@@ -116,18 +120,6 @@ public class RootContextConfiguration {
         return transactionManager;
     }
 
-    /* <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
-        <!-- 最大空闲数 -->
-        <property name="maxIdle" value="${redis.maxIdle}" />
-        <!-- 最大空连接数 -->
-        <property name="maxTotal" value="${redis.maxTotal}" />
-        <!-- 最大等待时间 -->
-        <property name="maxWaitMillis" value="${redis.maxWaitMillis}" />
-        <!-- 连接超时时是否阻塞，false时报异常,ture阻塞直到超时, 默认true -->
-         <property name="blockWhenExhausted" value="${redis.blockWhenExhausted}" />
-        <!-- 返回连接时，检测连接是否成功 -->
-        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
-    </bean>*/
     @Bean
     public JedisPoolConfig jedisPoolConfig(@Value("${redis.maxIdle}")int maxIdle,
                                            @Value("${redis.minEvictableIdleTimeMillis}")int minEvi,
@@ -173,5 +165,57 @@ public class RootContextConfiguration {
         expires.put(Const.CachePrefix.HOTPOST,86400L);//一天
         manager.setExpires(expires);
         return manager;
+    }
+
+    /*@Bean
+    public RegexpMethodPointcutAdvisor pointcutAdvisor(){
+        RegexpMethodPointcutAdvisor advisor=new RegexpMethodPointcutAdvisor();
+        advisor.setPattern("save.*");
+        advisor.setAdvice(new PostCacheQueryIntercepter());
+
+        return advisor;
+    }*/
+
+    //通知advice
+    @Bean
+    public PostCacheQueryIntercepter postCacheQueryIntercepter(){
+        return new PostCacheQueryIntercepter();
+    }
+
+    @Bean
+    public PostCacheUpdateIntercepter postCacheUpdateIntercepter(){
+        return new PostCacheUpdateIntercepter();
+    }
+
+    //切面
+    @Bean
+    public DefaultPointcutAdvisor queryPointcutAdvisor(PostCacheQueryIntercepter intercepter){
+       //切点
+        NameMatchMethodPointcut pointcut=new NameMatchMethodPointcut();
+        pointcut.setMappedNames(new String[]{"select*",""});
+        DefaultPointcutAdvisor advisor=new DefaultPointcutAdvisor();
+
+        advisor.setPointcut(pointcut);
+        advisor.setAdvice(intercepter);
+        return advisor;
+    }
+
+    @Bean
+    DefaultPointcutAdvisor updatePointcutAdvisor(PostCacheUpdateIntercepter intercepter){
+        NameMatchMethodPointcut pointcut=new NameMatchMethodPointcut();
+        pointcut.setMappedNames(new String[]{"update*","insert*","delete*"});
+        DefaultPointcutAdvisor advisor=new DefaultPointcutAdvisor();
+
+        advisor.setPointcut(pointcut);
+        advisor.setAdvice(intercepter);
+        return advisor;
+    }
+
+    @Bean
+    public BeanNameAutoProxyCreator proxyCreator(){
+        BeanNameAutoProxyCreator bean=new BeanNameAutoProxyCreator();
+        bean.setBeanNames("postMapper");
+        bean.setInterceptorNames(new String[]{"queryPointcutAdvisor","updatePointcutAdvisor"});
+        return bean;
     }
 }

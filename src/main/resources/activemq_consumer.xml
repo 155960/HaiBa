@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL">
+                    <value>tcp://127.0.0.1:61616</value>
+                </property>
+                <property name="useAsyncSend" value="true"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!--默认只缓存session-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="pooledConnectionFactory"/>
+        <property name="clientId" value="system_client"/>
+    </bean>
+
+    <bean id="systemMessageListener" class="com.zengqiang.future.common.SystemMessageListener"/>
+
+    <bean id="systemTopic" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg index="0" value="systemTopic"/>
+    </bean>
+
+    <bean id="systemMessageContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="systemTopic"/>
+        <property name="messageListener" ref="systemMessageListener"/>
+        <!--订阅模式-->
+        <property name="pubSubDomain" value="true"/>
+        <!--消息持久化-->
+        <property name="subscriptionDurable" value="true"/>
+        <property name="clientId" value="system_client"/>
+        <property name="durableSubscriptionName" value="system_client"/>
+        <!--<property name="concurrentConsumers" value="5"/>-->
+    </bean>
+</beans>

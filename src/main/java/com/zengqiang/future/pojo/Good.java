@@ -3,6 +3,12 @@ package com.zengqiang.future.pojo;
 import java.util.Date;
 
 public class Good {
+
+    private String name;
+
+    //旧的名字
+    private String displayName;
+
     private Integer id;
 
     private Integer postId;
@@ -85,5 +91,21 @@ public class Good {
 
     public void setOverdueTime(Date overdueTime) {
         this.overdueTime = overdueTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 }

@@ -28,7 +28,7 @@ public interface PostMapper {
 
     List<Post> selectNewestPosts(@Param("addrId") Integer addrId,
                                  @Param("id") Integer id,
-                                 @Param("begind") Integer begind,
+                                 @Param("begin") Integer begind,
                                  @Param("size") Integer size);
 
 }

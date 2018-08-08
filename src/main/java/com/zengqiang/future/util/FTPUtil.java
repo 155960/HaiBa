@@ -12,7 +12,7 @@ public class FTPUtil {
     private static String ftpIp = PropertiesUtil.getProperty("ftp.server.ip");
     private static String ftpUser = PropertiesUtil.getProperty("ftp.user");
     private static String ftpPass = PropertiesUtil.getProperty("ftp.pass");
-    private static String rootDir = PropertiesUtil.getProperty("ftp.root.dir");
+    private static String rootDir = PropertiesUtil.getProperty("ftp.home");
 
     private FTPClient client;
     private String user;
@@ -53,18 +53,51 @@ public class FTPUtil {
     }
 
     public static boolean downloadFile(List<File> fileList) {
+        FTPUtil ftpUtil=new FTPUtil(ftpIp, 21, ftpUser, ftpPass);
+
         return false;
     }
 
     private boolean downloadFile(String path, String remotePath, List<File> fileList) throws IOException {
-        boolean download = true;
-        FileOutputStream fos = null;
-        if (connectServer(this.ip, this.port, this.user, this.pwd)) {
-            client.changeWorkingDirectory("/home/ftp/img/");
-            client.setControlEncoding("UTF-8");
-
-        }
-        return download;
+       /* boolean flag = false;
+        OutputStream os=null;
+        try {
+            System.out.println("开始下载文件");
+            initFtpClient();
+            //切换FTP目录
+            ftpClient.changeWorkingDirectory(pathname);
+            FTPFile[] ftpFiles = ftpClient.listFiles();
+            for(FTPFile file : ftpFiles){
+                if(filename.equalsIgnoreCase(file.getName())){
+                    File localFile = new File(localpath + "/" + file.getName());
+                    os = new FileOutputStream(localFile);
+                    ftpClient.retrieveFile(file.getName(), os);
+                    os.close();
+                }
+            }
+            ftpClient.logout();
+            flag = true;
+            System.out.println("下载文件成功");
+        } catch (Exception e) {
+            System.out.println("下载文件失败");
+            e.printStackTrace();
+        } finally{
+            if(ftpClient.isConnected()){
+                try{
+                    ftpClient.disconnect();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+            if(null != os){
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }*/
+        return false;
     }
 
     /**
@@ -90,18 +123,21 @@ public class FTPUtil {
                     client.setFileType(FTPClient.BINARY_FILE_TYPE);
                     //少了这句将无法创建文件
                     client.enterLocalPassiveMode();
-
+                    System.out.println("创建文件");
                 } catch (IOException e) {
                     e.printStackTrace();
                     upload[fileList.size()] = true;
                 }
-
+                System.out.println("**"+fileList.size());
                 for (int i=0;i<fileList.size();i++) {
                     File fileItem=fileList.get(i);
                     try {
+                        System.out.println("准备上传");
                         if (fileItem != null) {
                             fis = new FileInputStream(fileItem);
+                            System.out.println("存储文件中");
                             client.storeFile(fileItem.getName(), fis);
+                            System.out.println("上传结束");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -112,7 +148,8 @@ public class FTPUtil {
             }
         } finally {
             try {
-                fis.close();
+                if(fis!=null)
+                    fis.close();
                 client.disconnect();
             } catch (IOException e) {
                 e.printStackTrace();

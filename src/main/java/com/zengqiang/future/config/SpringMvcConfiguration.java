@@ -11,12 +11,8 @@ import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.http.converter.xml.SourceHttpMessageConverter;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -30,6 +26,7 @@ import java.util.List;
 @ComponentScan(
     basePackages = "com.zengqiang.future.controller"
 )
+
 public class SpringMvcConfiguration extends WebMvcConfigurerAdapter{
 
     @Inject
@@ -54,11 +51,35 @@ public class SpringMvcConfiguration extends WebMvcConfigurerAdapter{
         converters.add(jsonConverter);
     }
 
-    @Bean
+  /*  @Bean
     public MultipartResolver multipartResolver(){
         //servlet3.0上传
        // return new StandardServletMultipartResolver();
        return new MyMultipartFileResolver();
+    }*/
+
+   /* @Bean
+    public PostCacheQueryIntercepter cacheIntercepter(){
+        return new PostCacheQueryIntercepter();
     }
+
+    @Bean
+    public RegexpMethodPointcutAdvisor pointcutAdvisor(PostCacheQueryIntercepter intercepter){
+        RegexpMethodPointcutAdvisor advisor=new RegexpMethodPointcutAdvisor();
+        advisor.setPattern("save.*");
+        advisor.setAdvice(intercepter);
+        return advisor;
+    }
+
+    @Bean
+    public ProxyFactoryBean factoryBean(TestService service){
+        ProxyFactoryBean bean=new ProxyFactoryBean();
+        bean.setTarget(service);
+        bean.setInterceptorNames("pointcutAdvisor");
+        return bean;
+    }*/
+
+
+
 
 }

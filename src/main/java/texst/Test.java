@@ -2,8 +2,10 @@ package texst;
 
 import com.alibaba.fastjson.JSON;
 import com.zengqiang.future.common.Const;
+import com.zengqiang.future.common.Notice;
 import com.zengqiang.future.form.ItemForm;
 import com.zengqiang.future.form.PostItemForm;
+import com.zengqiang.future.form.SystemForm;
 import com.zengqiang.future.pojo.Item;
 import com.zengqiang.future.service.IPostService;
 import com.zengqiang.future.service.impl.PostServiceImpl;
@@ -19,8 +21,53 @@ import java.util.List;
 import java.util.Properties;
 
 public class Test {
+    private static Object object=new Object();
     public static void main(String[] args) {
-        createPostItemForm();
+       createPostItemForm();
+    }
+
+    public static void t2(){
+        synchronized (object){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("****");
+        }
+        System.out.println("&&&&");
+    }
+
+    public static void t(){
+       Notice notice= new Notice();
+        Thread thread1=new Thread(new Runnable() {
+            @Override
+            public void run() {
+               notice.process();
+                System.out.println("******");
+            }
+        });
+        Thread thread2=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("$$$$$");
+
+                try {
+                    Thread.sleep(4500);
+                    System.out.println(")))))))))))");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                notice.clearFlag();
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+
+    public static void quene(){
+
     }
 
     public static void com(){
@@ -46,7 +93,7 @@ public class Test {
     }
 
     private static void createPostItemForm(){
-        PostItemForm form=new PostItemForm();
+       /* PostItemForm form=new PostItemForm();
         form.setContent("测试");
         form.setIsEnabledComment(0);
         form.setType((int)Const.Post.ITEM);
@@ -62,7 +109,9 @@ public class Test {
             itemForm.setId(1);
             items.add(itemForm);
         }
-        form.setItems(items);
-        System.out.println(JSON.toJSONString(form));
+        form.setItems(items);*/
+        SystemForm systemForm=new SystemForm();
+        systemForm.setMessage("1234567");
+        System.out.println(JSON.toJSONString(systemForm));
     }
 }

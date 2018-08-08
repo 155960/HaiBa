@@ -37,24 +37,16 @@ public class TextControoler {
     @Autowired
     AccountMapper accountMapper;
 
-    @RequestMapping(value = "test2",method = RequestMethod.POST)
-    @ResponseBody
-    public ServerResponse test(@RequestBody List<Post> post,@RequestBody User userForm) {
+    @RequestMapping(value = "test2",method = RequestMethod.GET)
+    public void test2() {
+        testService.update(5);
 
-        if(post!=null){
-            String s=post.get(0).getContent();
-            System.out.println(s);
-        }
-        if (userForm!=null){
-            System.out.println(userForm.getPhone());
-        }
-        return ServerResponse.createBySuccess();
     }
 
-    @RequestMapping(value = "test",method = RequestMethod.POST)
+    @RequestMapping(value = "test",method = RequestMethod.GET)
     @ResponseBody
     public void test(){
-        testService.test();
+        testService.select(10);
 
 
         /*Integer a=accountMapper.selectIdByAccount("1234");
